@@ -1,23 +1,21 @@
-
 import { Route, Routes } from "react-router-dom";
 import Register from "./components/Register";
 import Login from "./components/Login";
-import Navbar from "./Navbar";
-import ResponsiveGrid from "./Grid";
-import Footer from "./Footer";
+import Navbar from "./components/Navbar";
+import ResponsiveGrid from "./commons/Grid";
+import Footer from "./components/Footer";
 
 function App() {
   return (
     <>
-    <Navbar />
-      <ResponsiveGrid />
+      <Navbar />
 
       <Routes>
+        <Route path="/" element={<ResponsiveGrid />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-       
       </Routes>
-<Footer />
+      <Footer />
     </>
   );
 }
