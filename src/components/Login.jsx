@@ -122,6 +122,7 @@ export default function Login() {
                   helperText={error ? error.message : null}
                   type="password"
                   fullWidth
+                  sx={{ mt: 1 }}
                 />
               )}
               rules={{
