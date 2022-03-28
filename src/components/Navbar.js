@@ -11,6 +11,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import { Link } from "react-router-dom";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Dashboard", "Logout"];
@@ -44,11 +45,13 @@ const Navbar = () => {
             component="div"
             sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
           >
-            <img
-              src={require("../assets/turnosWEB-logos_white.png")}
-              height={"50px"}
-              width={"auto"}
-            />
+            <Link to="/">
+              <img
+                src={require("../assets/turnosWEB-logos_white.png")}
+                height={"50px"}
+                width={"auto"}
+              />
+            </Link>
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -93,11 +96,13 @@ const Navbar = () => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           >
-            <img
-              src={require("../assets/turnosWEB-logos_white.png")}
-              height={"50px"}
-              width={"auto"}
-            />
+            <Link to="/">
+              <img
+                src={require("../assets/turnosWEB-logos_white.png")}
+                height={"50px"}
+                width={"auto"}
+              />
+            </Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {/* {pages.map((page) => (
