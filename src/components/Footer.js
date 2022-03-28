@@ -23,7 +23,10 @@ export default function Footer() {
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'column',/* 
+        position: 'fixed',
+        bottom: '0',
+        width: '100%' */
       }}
     >
       <CssBaseline />

@@ -16,7 +16,7 @@ export default function ResponsiveGrid() {
       >
         {Array.from(Array(12)).map((_, index) => (
           <Grid item xs={1} sm={4} md={4} key={index}>
-            <ResponsiveCard />
+            <ResponsiveCard image={`https://picsum.photos/200/30${index}`}/>
           </Grid>
         ))}
       </Grid>

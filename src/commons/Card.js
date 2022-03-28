@@ -7,13 +7,13 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
-export default function ResponsiveCard() {
+export default function ResponsiveCard({image}) {
   return (
     <Card sx={{ maxWidth: 600 }}>
       <CardMedia
         component="img"
         height="140"
-        image="https://www.lavoz.com.ar/resizer/Bjy9UDOD3C7yj2CC6tjrVFJJZjw=/1023x682/smart/cloudfront-us-east-1.images.arcpublishing.com/grupoclarin/2QQKMCSIRFHGNPPEY35YR5LLDQ.jpg"
+        image={image}
         alt="sucursal"
       />
       <CardContent>

@@ -58,7 +58,7 @@ export default function Register() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "darkblue" }}>
+          <Avatar sx={{ m: 1}}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
