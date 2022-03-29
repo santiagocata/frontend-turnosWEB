@@ -67,7 +67,6 @@ const AdminView = () => {
           <Box>
             <TextField
               sx={style}
-              id="outlined-basic"
               label="Name"
               name="name"
               variant="outlined"
@@ -117,7 +116,6 @@ const AdminView = () => {
           <Box>
             <TextField
               sx={style}
-              id="outlined-basic"
               label="Email"
               variant="outlined"
               name="email"
@@ -151,7 +149,6 @@ const AdminView = () => {
           <Box>
             <TextField
               sx={style}
-              id="outlined-basic"
               label="Quantity"
               type="number"
               name="turnQuantity"
@@ -160,7 +157,6 @@ const AdminView = () => {
             ></TextField>
             <TextField
               sx={style}
-              id="outlined-basic"
               label="Coordinates"
               name="coordinates"
               variant="outlined"
