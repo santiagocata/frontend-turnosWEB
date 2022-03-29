@@ -4,18 +4,19 @@ import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import ResponsiveGrid from "./commons/Grid";
 import Footer from "./components/Footer";
+import AdminView from "./components/AdminView";
 
 function App() {
   return (
     <>
       <Navbar />
-
       <Routes>
         <Route path="/" element={<ResponsiveGrid />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/admin" element={<AdminView />} />
       </Routes>
-        <Footer />
+      <Footer />
     </>
   );
 }
