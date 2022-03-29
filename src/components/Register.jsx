@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
 
 function Copyright(props) {
   return (
@@ -43,7 +44,9 @@ export default function Register() {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(JSON.stringify(data));
+    data.role = "client";
+
+    axios.post("/user/register", data).then((data) => console.log(data.data));
   };
 
   return (
@@ -58,8 +61,7 @@ export default function Register() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1}}>
-
+          <Avatar sx={{ m: 1 }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -74,7 +76,7 @@ export default function Register() {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <Controller
-                  name="firstName"
+                  name="name"
                   control={control}
                   defaultValue=""
                   render={({
@@ -82,7 +84,7 @@ export default function Register() {
                     fieldState: { error },
                   }) => (
                     <TextField
-                      {...register("firstName", {
+                      {...register("name", {
                         pattern: {
                           value:
                             /^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g,
@@ -105,7 +107,7 @@ export default function Register() {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Controller
-                  name="lastName"
+                  name="lastname"
                   control={control}
                   defaultValue=""
                   render={({
@@ -113,7 +115,7 @@ export default function Register() {
                     fieldState: { error },
                   }) => (
                     <TextField
-                      {...register("lastName", {
+                      {...register("lastname", {
                         pattern: {
                           value:
                             /^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g,
@@ -214,6 +216,10 @@ export default function Register() {
                         //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
                         //   message: "Ingrese contraseña  valida",
                         // },
+                        minLength: {
+                          value: 8,
+                          message: "Contraseña mínimo 8 caracteres",
+                        },
                       })}
                       label="Contraseña *"
                       value={value}
