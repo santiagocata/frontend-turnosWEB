@@ -4,10 +4,11 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import LogContextProvider from "./context/UserContext";
 
+
 ReactDOM.render(
   <LogContextProvider>
     <BrowserRouter>
-      <App />
+        <App />
     </BrowserRouter>
   </LogContextProvider>,
   document.getElementById("root")
