@@ -8,6 +8,8 @@ import axios from "axios";
 import { LogContext } from "./context/UserContext";
 import { useContext, useEffect } from "react";
 
+import SingleView from "./commons/SingleView";
+
 function App() {
   const { togleAuth, user } = useContext(LogContext);
 
@@ -26,6 +28,7 @@ function App() {
         />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/book/:id" element={<SingleView />} />
       </Routes>
       <Footer />
     </>

@@ -8,7 +8,7 @@ import LogContextProvider from "./context/UserContext";
 ReactDOM.render(
   <LogContextProvider>
     <BrowserRouter>
-      <App />
+        <App />
     </BrowserRouter>
   </LogContextProvider>,
   document.getElementById("root")
