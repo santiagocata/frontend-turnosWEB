@@ -13,6 +13,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -43,10 +44,12 @@ export default function Register() {
     formState: { errors },
   } = useForm();
 
+  const navigate = useNavigate();
+
   const onSubmit = (data) => {
     data.role = "client";
 
-    axios.post("/user/register", data).then((data) => console.log(data.data));
+    axios.post("/user/register", data).then((data) => navigate("/login"));
   };
 
   return (

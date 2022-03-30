@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 
@@ -15,16 +15,45 @@ import Select from "@mui/material/Select";
 import { useParams } from "react-router";
 import genTurns from "../utils/genTurns";
 
+import axios from "axios";
+
 export default function SingleView() {
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const today = new Date().toISOString().slice(0, 10);
+  const [date, setDate] = useState(today);
   const [time, setTime] = useState("");
+  const [status, setStatus] = useState({});
   const [availability, setAvailability] = useState("");
+  const [branch, setBranch] = useState({});
 
   const { id } = useParams();
 
   const submitData = () => {
-    console.log({ turn: `${date}T${time}:00.000Z`, sucursal: id });
+    axios
+      .post(`/turn`, {
+        branchId: id,
+        date: date,
+        time: time,
+      })
+      .then((data) => {
+        alert(data.data);
+      });
   };
+
+  useEffect(() => {
+    axios.get(`/branch/${id}`).then((branch) => {
+      setBranch(branch.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    axios.get(`/turn/disponibility/${id}/${date}`).then((status) => {
+      setStatus(status.data);
+    });
+  }, [date]);
+
+  if (!branch.turnRange) {
+    return <></>;
+  }
 
   return (
     <Grid
@@ -61,17 +90,22 @@ export default function SingleView() {
         <FormControl>
           <InputLabel>Elige el horario</InputLabel>
           <Select sx={{ width: 220 }} value={time} label="Elige el horario">
-            {genTurns(8, 16).map((turn, i) => {
+            {genTurns(
+              JSON.parse(branch.turnRange).open,
+              JSON.parse(branch.turnRange).close,
+              branch.maxPerTurn,
+              status
+            ).map((turn, i) => {
               return (
                 <MenuItem
                   onClick={() => {
-                    setTime(turn);
-                    setAvailability(Math.floor(Math.random() * 10) + 1);
+                    setTime(turn.time);
+                    setAvailability(turn.available);
                   }}
                   key={i}
-                  value={turn}
+                  value={turn.time}
                 >
-                  {turn}
+                  {turn.time}
                 </MenuItem>
               );
             })}

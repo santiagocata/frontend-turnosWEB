@@ -8,13 +8,13 @@ import Typography from "@mui/material/Typography";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Link } from "react-router-dom";
 
-export default function ResponsiveCard({ image, id }) {
+export default function ResponsiveCard({ image, branch }) {
   return (
     <Card sx={{ maxWidth: 600 }}>
       <CardMedia component="img" height="140" image={image} alt="sucursal" />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          SUCURSAL
+          {branch.name}
         </Typography>
         <Typography
           icon={LocationOnIcon}
@@ -31,7 +31,7 @@ export default function ResponsiveCard({ image, id }) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Link to={`/book/${id}`} style={{ textDecoration: 'none' }}>
+        <Link to={`/book/${branch.id}`} style={{ textDecoration: "none" }}>
           <Button variant="contained" size="small">
             RESERVAR TURNO
           </Button>
