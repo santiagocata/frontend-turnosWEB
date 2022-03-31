@@ -43,13 +43,7 @@ const theme = createTheme();
 export default function Login() {
   const { togleAuth } = useContext(LogContext);
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-
-    control,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, control } = useForm();
 
   const onSubmit = (data) => {
     axios

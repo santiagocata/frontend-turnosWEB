@@ -1,0 +1,32 @@
+.notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.num {
+  font-size: 200px;
+  margin-bottom: 0;
+}
+
+.message {
+  margin-top: 0;
+  font-size: 100px;
+}
+
+@media (width < 426px) {
+  .notFound {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .num {
+    font-size: 150px;
+    margin-bottom: 0;
+  }
+
+  .message {
+    font-size: -webkit-xxx-large;
+  }
+}
