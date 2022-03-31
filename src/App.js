@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import ResponsiveGrid from "./commons/Grid";
 import Footer from "./components/Footer";
 import AdminView from "./components/AdminView";
+import BranchList from "./components/BranchList";
 import SingleView from "./commons/SingleView";
 import NotFound from "./commons/NotFound";
 import GridTurns from "./components/GridTurns";
@@ -37,10 +38,13 @@ function App() {
         )}
 
         <Route path="/admin" element={<AdminView />} />
+          <Route path="/adminlist" element={<BranchList />} />
+
         <Route path="/turn" element={<GridTurns />} />
 
         <Route path="404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="404" />} />
+
       </Routes>
       <Footer />
     </>

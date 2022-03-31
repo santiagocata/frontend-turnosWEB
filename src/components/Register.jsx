@@ -39,6 +39,8 @@ export default function Register() {
 
   const navigate = useNavigate();
 
+  const navigate = useNavigate();
+
   const onSubmit = (data) => {
     data.role = "client";
 
