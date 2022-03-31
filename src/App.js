@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import ResponsiveGrid from "./commons/Grid";
 import Footer from "./components/Footer";
 import AdminView from "./components/AdminView";
+import BranchList from "./components/BranchList";
 import SingleView from "./commons/SingleView";
 
 import { Route, Routes } from "react-router-dom";
@@ -30,6 +31,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<AdminView />} />
+        <Route path="/adminlist" element={<BranchList />} />
         <Route path="/book/:id" element={<SingleView />} />
       </Routes>
       <Footer />
