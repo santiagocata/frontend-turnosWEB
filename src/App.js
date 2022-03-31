@@ -7,11 +7,13 @@ import AdminView from "./components/AdminView";
 import BranchList from "./components/BranchList";
 import SingleView from "./commons/SingleView";
 
+import ForgotPassword from "./components/ForgotPassword";
+import SetNewPassword from "./components/SetNewPassword";
+
 import { Route, Routes } from "react-router-dom";
 import axios from "axios";
 import { LogContext } from "./context/UserContext";
 import { useContext, useEffect } from "react";
-
 
 function App() {
   const { togleAuth, user } = useContext(LogContext);
@@ -33,6 +35,8 @@ function App() {
         <Route path="/admin" element={<AdminView />} />
         <Route path="/adminlist" element={<BranchList />} />
         <Route path="/book/:id" element={<SingleView />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/reset/:token" element={<SetNewPassword />} />
       </Routes>
       <Footer />
     </>

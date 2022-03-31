@@ -11,11 +11,12 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-
 import { useParams } from "react-router";
 import genTurns from "../utils/genTurns";
 
 import axios from "axios";
+
+import { useNavigate } from "react-router-dom";
 
 export default function SingleView() {
   const today = new Date().toISOString().slice(0, 10);
@@ -27,6 +28,8 @@ export default function SingleView() {
 
   const { id } = useParams();
 
+  const navigate = useNavigate();
+
   const submitData = () => {
     axios
       .post(`/turn`, {
@@ -36,6 +39,7 @@ export default function SingleView() {
       })
       .then((data) => {
         alert(data.data);
+        navigate("/");
       });
   };
 
