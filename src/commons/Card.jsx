@@ -6,19 +6,15 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { Link } from "react-router-dom";
 
-export default function ResponsiveCard({image}) {
+export default function ResponsiveCard({ image, branch }) {
   return (
     <Card sx={{ maxWidth: 600 }}>
-      <CardMedia
-        component="img"
-        height="140"
-        image={image}
-        alt="sucursal"
-      />
+      <CardMedia component="img" height="140" image={image} alt="sucursal" />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          SUCURSAL
+          {branch.name}
         </Typography>
         <Typography
           icon={LocationOnIcon}
@@ -35,9 +31,11 @@ export default function ResponsiveCard({image}) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button variant="contained" size="small">
-          RESERVAR TURNO
-        </Button>
+        <Link to={`/book/${branch.id}`} style={{ textDecoration: "none" }}>
+          <Button variant="contained" size="small">
+            RESERVAR TURNO
+          </Button>
+        </Link>
       </CardActions>
     </Card>
   );
