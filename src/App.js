@@ -8,6 +8,9 @@ import BranchList from "./components/BranchList";
 import SingleView from "./commons/SingleView";
 import NotFound from "./commons/NotFound";
 import GridTurns from "./components/GridTurns";
+import ForgotPassword from "./components/ForgotPassword";
+import SetNewPassword from "./components/SetNewPassword";
+
 import { Navigate, Route, Routes } from "react-router";
 import axios from "axios";
 import { LogContext } from "./context/UserContext";
@@ -56,6 +59,9 @@ function App() {
         {user?.role === "operator" && (
           <Route path="/turn" element={<GridTurns />} />
         )}
+
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/reset/:token" element={<SetNewPassword />} />
 
         <Route path="404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="404" />} />

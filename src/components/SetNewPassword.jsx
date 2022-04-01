@@ -13,12 +13,12 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { LogContext } from "../context/UserContext";
-import { useContext } from "react";
 
 import MuiAlert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
+
+import { useParams } from "react-router";
 
 function Copyright(props) {
   return (
@@ -30,7 +30,7 @@ function Copyright(props) {
     >
       {"Copyright © "}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        turnosWEB
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -40,18 +40,25 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function Login() {
-  const { togleAuth } = useContext(LogContext);
+export default function SetNewPassword() {
+  const { token } = useParams();
+  console.log(token);
+
   const navigate = useNavigate();
-  const { register, handleSubmit, control } = useForm();
+  const {
+    register,
+    handleSubmit,
+
+    control,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit = (data) => {
+    console.log(data);
     axios
-      .post("/user/login", data)
-      .then((data) => {
-        togleAuth(data.data);
-      })
-      .then(() => {
+      .post(`/user/password/reset/${token}`, data)
+      .then((res) => {
+        alert("Cambio de contraseña exitoso");
         navigate("/");
       })
       .catch((err) => setEmailErrorMsg(true));
@@ -86,7 +93,7 @@ export default function Login() {
             severity="warning"
             sx={{ width: "100%" }}
           >
-            ¡Email o contraseña incorrectos!
+            ¡El token se encuentra vencido o es incorrecto!
           </Alert>
         </Snackbar>
       </Stack>
@@ -100,11 +107,11 @@ export default function Login() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "darkblue" }}>
-            <LockOutlinedIcon />
+          <Avatar sx={{ m: 1, bgcolor: "blue" }}>
+            {/*  <LockOutlinedIcon /> */}
           </Avatar>
           <Typography component="h1" variant="h5">
-            Inciar Sesion
+            Ingrese su nueva contraseña
           </Typography>
           <Box
             component="form"
@@ -112,34 +119,6 @@ export default function Login() {
             noValidate
             sx={{ mt: 3 }}
           >
-            <Controller
-              name="email"
-              control={control}
-              defaultValue=""
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <TextField
-                  {...register("email", {
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                      message: "Ingrese un email valido",
-                    },
-                  })}
-                  label="Email *"
-                  value={value}
-                  onChange={onChange}
-                  error={!!error}
-                  helperText={error ? error.message : null}
-                  type="email"
-                  fullWidth
-                />
-              )}
-              rules={{
-                required: "Campo requerido",
-              }}
-            />
             <Controller
               name="password"
               control={control}
@@ -177,20 +156,8 @@ export default function Login() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Inicia Sesión
+              CONFIRMAR
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="forgotpassword" variant="body2">
-                  Olvidaste tu contraseña?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="register" variant="body2">
-                  {"No tienes cuenta? Registrate"}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

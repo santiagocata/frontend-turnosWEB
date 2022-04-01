@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,6 +13,10 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
+import MuiAlert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+import Snackbar from "@mui/material/Snackbar";
 
 function Copyright(props) {
   return (
@@ -41,12 +45,46 @@ export default function Register() {
 
   const onSubmit = (data) => {
     data.role = "client";
+    
+    axios
+    .post("/user/register", data)
+    .then((data) => navigate("/login"))
+    .catch((err) => {
+      setEmailErrorMsg(true);
+    });
+  };
+  
+  
+  const [emailErrorMsg, setEmailErrorMsg] = useState(false);
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
-    axios.post("/user/register", data).then((data) => navigate("/login"));
+  const handleClose = (event, reason) => {
+    /* if (reason === "clickaway") {
+      /// Esta función permite que no se elimine la alerta al hacer click en cualquier parte
+      return;
+    } */
+    setEmailErrorMsg(false);
   };
 
   return (
     <ThemeProvider theme={theme}>
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          open={emailErrorMsg}
+          autoHideDuration={6000}
+          onClose={handleClose}
+        >
+          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+            ¡El email ingresado ya se encuentra registrado!
+          </Alert>
+        </Snackbar>
+      </Stack>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -63,6 +101,7 @@ export default function Register() {
           <Typography component="h1" variant="h5">
             Registrate
           </Typography>
+
           <Box
             component="form"
             noValidate
