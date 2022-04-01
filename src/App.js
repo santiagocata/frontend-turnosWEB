@@ -8,20 +8,29 @@ import BranchList from "./components/BranchList";
 import SingleView from "./commons/SingleView";
 import NotFound from "./commons/NotFound";
 import GridTurns from "./components/GridTurns";
-
 import { Navigate, Route, Routes } from "react-router";
 import axios from "axios";
 import { LogContext } from "./context/UserContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 function App() {
   const { togleAuth, user } = useContext(LogContext);
 
-  useEffect(() => {
-    axios.get("/user/me").then((data) => togleAuth(data.data));
-  }, []);
-  console.log(user);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(async () => {
+    try {
+      const data = await axios.get("/user/me");
+      togleAuth(data.data);
+      setLoading(false);
+    } catch {
+      setLoading(false);
+    }
+  }, []);
+
+  if (loading) return null;
+
+  console.log(user);
   return (
     <>
       <Navbar />
@@ -37,14 +46,19 @@ function App() {
           <Route path="/book/:id" element={<SingleView />} />
         )}
 
-        <Route path="/admin" element={<AdminView />} />
-          <Route path="/adminlist" element={<BranchList />} />
+        {user?.role === "admin" && (
+          <>
+            <Route path="/admin" element={<AdminView />} />
+            <Route path="/adminlist" element={<BranchList />} />
+          </>
+        )}
 
-        <Route path="/turn" element={<GridTurns />} />
+        {user?.role === "operator" && (
+          <Route path="/turn" element={<GridTurns />} />
+        )}
 
         <Route path="404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="404" />} />
-
       </Routes>
       <Footer />
     </>
