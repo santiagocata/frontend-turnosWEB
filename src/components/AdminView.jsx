@@ -14,14 +14,20 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";
 
-const AdminView = () => {
+const AdminView = ({ branchs, setBranchs, visibility, setVisibility }) => {
   const [state, setState] = useState({
-    name: "",
-    password: "",
-    hours: "",
-    turnQuantity: "",
-    email: "",
-    coordinates: "",
+    form: {
+      id: branchs.length + 1,
+      name: "",
+      email: "",
+      password: "",
+      coords: "",
+      maxPerTurn: 0,
+      turnRange: {
+        startHours: "00:00",
+        endHours: "00:00",
+      },
+    },
     showPassword: false,
   });
   const [hours, setHours] = useState(["00:00"]);
@@ -43,13 +49,29 @@ const AdminView = () => {
     });
   };
 
-  const handleChange = (e) => {
-    setState({ ...state, [e.target.name]: e.target.value });
+  const handleChange = (e, turnRange) => {
+    turnRange === undefined
+      ? setState({
+          ...state,
+          form: { ...state.form, [e.target.name]: e.target.value },
+        })
+      : setState({
+          ...state,
+          form: {
+            ...state.form,
+            turnRange: {
+              ...state.form.turnRange,
+              [e.target.name]: e.target.value,
+            },
+          },
+        });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(state);
+    console.log(state.form);
+    setBranchs([...branchs, state.form]);
+    setVisibility(!visibility);
   };
 
   return (
@@ -79,10 +101,10 @@ const AdminView = () => {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                name="hours"
+                name="startHours"
                 defaultValue={hours[0]}
                 label="Start Hour"
-                onChange={handleChange}
+                onChange={(e) => handleChange(e, "turnRange")}
               >
                 {hours.map((value, index) => {
                   return (
@@ -98,10 +120,10 @@ const AdminView = () => {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                name="hours"
+                name="endHours"
                 defaultValue={hours[0]}
                 label="End Hour"
-                onChange={handleChange}
+                onChange={(e) => handleChange(e, "turnRange")}
               >
                 {hours.map((value, index) => {
                   return (
@@ -151,14 +173,14 @@ const AdminView = () => {
               sx={style}
               label="Quantity"
               type="number"
-              name="turnQuantity"
+              name="maxPerTurn"
               variant="outlined"
               onChange={handleChange}
             ></TextField>
             <TextField
               sx={style}
               label="Coordinates"
-              name="coordinates"
+              name="coords"
               variant="outlined"
               onChange={handleChange}
             ></TextField>
