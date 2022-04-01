@@ -7,9 +7,8 @@ import ResponsiveCard from "./Card";
 import axios from "axios";
 
 export default function ResponsiveGrid() {
-
   const [branches, setBranches] = useState([]);
-  
+
   useEffect(() => {
     axios.get("/branch/all").then((branch) => {
       setBranches(branch.data);

@@ -42,6 +42,7 @@ export default function Register() {
   const { register, handleSubmit, control } = useForm();
 
   const navigate = useNavigate();
+
   const onSubmit = (data) => {
     data.role = "client";
     
