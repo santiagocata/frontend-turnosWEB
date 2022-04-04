@@ -45,16 +45,15 @@ export default function Register() {
 
   const onSubmit = (data) => {
     data.role = "client";
-    
+
     axios
-    .post("/user/register", data)
-    .then((data) => navigate("/login"))
-    .catch((err) => {
-      setEmailErrorMsg(true);
-    });
+      .post("/user/register", data)
+      .then((data) => navigate("/login"))
+      .catch((err) => {
+        setEmailErrorMsg(true);
+      });
   };
-  
-  
+
   const [emailErrorMsg, setEmailErrorMsg] = useState(false);
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
