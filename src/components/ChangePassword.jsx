@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,14 +11,16 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useForm, Controller } from "react-hook-form";
-import { useNavigate, Link as Linked } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { LogContext } from "../context/UserContext";
-import { useContext } from "react";
 
 import MuiAlert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
+
+import { useParams } from "react-router";
+
+import { LogContext } from "../context/UserContext";
 
 function Copyright(props) {
   return (
@@ -30,7 +32,7 @@ function Copyright(props) {
     >
       {"Copyright © "}
       <Link color="inherit" href="https://mui.com/">
-        turnosAPP
+        turnosWEB
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -40,21 +42,34 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function Login() {
-  const { togleAuth } = useContext(LogContext);
+export default function ChangePassword() {
+  const { user } = useContext(LogContext);
+
   const navigate = useNavigate();
-  const { register, handleSubmit, control } = useForm();
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit = (data) => {
     axios
-      .post("/user/login", data)
-      .then((data) => {
-        togleAuth(data.data);
-      })
-      .then(() => {
+      .put(`/user/password/change/${user.id}`, { ...data, email: user.email })
+      .then((res) => {
+        alert("Cambio de contraseña exitoso");
         navigate("/");
       })
       .catch((err) => setEmailErrorMsg(true));
+
+    /* 
+    axios
+      .post(`/user/password/reset/${token}`, data)
+      .then((res) => {
+        alert("Cambio de contraseña exitoso");
+        navigate("/");
+      })
+      .catch((err) => setEmailErrorMsg(true)); */
   };
   const [emailErrorMsg, setEmailErrorMsg] = useState(false);
   const Alert = React.forwardRef(function Alert(props, ref) {
@@ -86,7 +101,7 @@ export default function Login() {
             severity="warning"
             sx={{ width: "100%" }}
           >
-            ¡Email o contraseña incorrectos!
+            ¡Contraseña Incorrecta!
           </Alert>
         </Snackbar>
       </Stack>
@@ -100,11 +115,8 @@ export default function Login() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "darkblue" }}>
-            <LockOutlinedIcon />
-          </Avatar>
           <Typography component="h1" variant="h5">
-            Inciar Sesión
+            Cambiar contraseña
           </Typography>
           <Box
             component="form"
@@ -112,34 +124,6 @@ export default function Login() {
             noValidate
             sx={{ mt: 3 }}
           >
-            <Controller
-              name="email"
-              control={control}
-              defaultValue=""
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <TextField
-                  {...register("email", {
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                      message: "Ingrese un email valido",
-                    },
-                  })}
-                  label="Email *"
-                  value={value}
-                  onChange={onChange}
-                  error={!!error}
-                  helperText={error ? error.message : null}
-                  type="email"
-                  fullWidth
-                />
-              )}
-              rules={{
-                required: "Campo requerido",
-              }}
-            />
             <Controller
               name="password"
               control={control}
@@ -156,7 +140,41 @@ export default function Login() {
                     //   message: "Ingrese contraseña  valida",
                     // },
                   })}
-                  label="Contraseña *"
+                  label="Contraseña actual *"
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                  type="password"
+                  fullWidth
+                  sx={{ mt: 1 }}
+                />
+              )}
+              rules={{
+                required: "Campo requerido",
+              }}
+            />
+            <Controller
+              name="newPassword"
+              control={control}
+              defaultValue=""
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <TextField
+                  {...register("newPassword", {
+                    // pattern: {
+                    //   value:
+                    //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
+                    //   message: "Ingrese contraseña  valida",
+                    // },
+                    minLength: {
+                      value: 8,
+                      message: "Contraseña mínimo 8 caracteres",
+                    },
+                  })}
+                  label="Nueva contraseña *"
                   value={value}
                   onChange={onChange}
                   error={!!error}
@@ -177,24 +195,8 @@ export default function Login() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Inicia Sesión
+              CONFIRMAR
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Linked to="/forgotpassword">
-                  <Typography variant="body2">
-                    ¿Olvidaste tu contraseña?
-                  </Typography>
-                </Linked>
-              </Grid>
-              <Grid item>
-                <Linked to="/register">
-                  <Typography variant="body2">
-                    ¿No tienes cuenta? Regístrate
-                  </Typography>
-                </Linked>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

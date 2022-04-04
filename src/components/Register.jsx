@@ -12,7 +12,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as Linked } from "react-router-dom";
 
 import MuiAlert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
@@ -28,7 +28,7 @@ function Copyright(props) {
     >
       {"Copyright © "}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        turnosAPP
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -280,9 +280,11 @@ export default function Register() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="login" variant="body2">
-                  Ya tienes cuenta? Inicia Sesión
-                </Link>
+                <Linked to="/login">
+                  <Typography variant="body2">
+                    Ya tienes cuenta? Inicia Sesión
+                  </Typography>
+                </Linked>
               </Grid>
             </Grid>
           </Box>
