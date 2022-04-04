@@ -2,7 +2,6 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import ResponsiveGrid from "./commons/Grid";
-import Footer from "./components/Footer";
 import AdminView from "./components/AdminView";
 import BranchList from "./components/BranchList";
 import SingleView from "./commons/SingleView";
@@ -33,7 +32,6 @@ function App() {
 
   if (loading) return null;
 
-  console.log(user);
   return (
     <>
       <Navbar />
@@ -66,7 +64,6 @@ function App() {
         <Route path="404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="404" />} />
       </Routes>
-      <Footer />
     </>
   );
 }
