@@ -10,17 +10,18 @@ import NotFound from "./commons/NotFound";
 import GridTurns from "./components/GridTurns";
 import ForgotPassword from "./components/ForgotPassword";
 import SetNewPassword from "./components/SetNewPassword";
+import ChangePassword from "./components/ChangePassword";
+import SingleTurn from "./components/SingleTurn";
+import ChangeTurn from "./components/ChangeTurn";
 
 import { Navigate, Route, Routes } from "react-router";
 import axios from "axios";
 import { LogContext } from "./context/UserContext";
 import { useContext, useEffect, useState } from "react";
-
 function App() {
   const { togleAuth, user } = useContext(LogContext);
 
   const [loading, setLoading] = useState(true);
-
   useEffect(async () => {
     try {
       const data = await axios.get("/user/me");
@@ -33,7 +34,6 @@ function App() {
 
   if (loading) return null;
 
-  console.log(user);
   return (
     <>
       <Navbar />
@@ -60,13 +60,17 @@ function App() {
           <Route path="/turn" element={<GridTurns />} />
         )}
 
+        <Route path="/myturn" element={<SingleTurn />} />
+        <Route path="/changepassword" element={<ChangePassword />} />
+        <Route path="/changeturn/:id" element={<ChangeTurn />} />
+
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/reset/:token" element={<SetNewPassword />} />
 
         <Route path="404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="404" />} />
       </Routes>
-      <Footer />
+      {/* <Footer />  */}
     </>
   );
 }

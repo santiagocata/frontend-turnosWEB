@@ -39,16 +39,8 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
   const settings = [
-    "Perfil",
-    "Dashboard",
-    <span
-      onClick={() => {
-        logOut();
-        navigate("/");
-      }}
-    >
-      Cerrar Sesión
-    </span>,
+    { to: "myturn", text: "Mi turno" },
+    { to: "changepassword", text: "Cambiar contraseña" },
   ];
   return (
     <AppBar position="static" sx={{ backgroundColor: "gray" }}>
@@ -68,7 +60,7 @@ const Navbar = () => {
               />
             </Link>
           </Typography>
-{/* 
+          {/* 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -155,11 +147,26 @@ const Navbar = () => {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
+                {settings.map((setting, i) => (
+                  <Link
+                    key={i}
+                    to={`${setting.to}`}
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    <MenuItem key={i} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">{setting.text}</Typography>
+                    </MenuItem>
+                  </Link>
                 ))}
+                <Link
+                  to={""}
+                  style={{ color: "inherit", textDecoration: "none" }}
+                  onClick={() => logOut()}
+                >
+                  <MenuItem key={5} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">Cerrar sesión</Typography>
+                  </MenuItem>
+                </Link>
               </Menu>
             </Box>
           ) : (
