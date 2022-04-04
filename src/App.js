@@ -2,7 +2,6 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import ResponsiveGrid from "./commons/Grid";
-import Footer from "./components/Footer";
 import AdminView from "./components/AdminView";
 import BranchList from "./components/BranchList";
 import SingleView from "./commons/SingleView";
