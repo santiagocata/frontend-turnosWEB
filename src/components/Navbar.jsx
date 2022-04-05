@@ -39,8 +39,12 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
   const settings = [
-    { to: "myturn", text: "Mi turno" },
-    { to: "changepassword", text: "Cambiar contraseña" },
+    user?.role == "operator"
+      ? { to: "turn", text: "Panel Turnos" }
+      : user?.role == "admin"
+      ? { to: "admin", text: "Nueva Sucursal" }
+      : { to: "myturn", text: "Mi Turno" },
+    { to: "changepassword", text: "Cambiar Contraseña" },
   ];
   return (
     <AppBar position="static" sx={{ backgroundColor: "gray" }}>
@@ -158,13 +162,14 @@ const Navbar = () => {
                     </MenuItem>
                   </Link>
                 ))}
+
                 <Link
                   to={""}
                   style={{ color: "inherit", textDecoration: "none" }}
                   onClick={() => logOut()}
                 >
                   <MenuItem key={5} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">Cerrar sesión</Typography>
+                    <Typography textAlign="center">Cerrar Sesión</Typography>
                   </MenuItem>
                 </Link>
               </Menu>
