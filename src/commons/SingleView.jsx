@@ -13,10 +13,11 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useParams } from "react-router";
 import genTurns from "../utils/genTurns";
+import Countdown from "react-countdown";
 
 import axios from "axios";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 export default function SingleView() {
   const today = new Date().toISOString().slice(0, 10);
@@ -38,7 +39,7 @@ export default function SingleView() {
         time: time,
       })
       .then((data) => {
-        alert(data.data);
+        alert("Turno reservado");
         navigate("/");
       });
   };
@@ -59,6 +60,26 @@ export default function SingleView() {
     return <></>;
   }
 
+  const renderer = ({ hours, minutes, seconds, completed }) => {
+    if (completed) {
+      alert("Ha caducado su sesión")
+      return <Navigate to="/" />;
+    } else {
+      return (
+        <TextField
+          sx={{ width: 220 }}
+          id="outlined-read-only-input-time"
+          label="Tiempo restante"
+          value={minutes + ":" + seconds}
+          disabled
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      );
+    }
+  };
+
   return (
     <Grid
       container
@@ -70,6 +91,10 @@ export default function SingleView() {
         p: "60px",
       }}
     >
+      <Grid item xs={4}>
+        <Countdown date={Date.now() + 10000} renderer={renderer} />
+      </Grid>
+
       <Grid item xs={4}>
         <TextField
           sx={{ width: 220 }}
@@ -131,7 +156,6 @@ export default function SingleView() {
           />
         </Grid>
       )}
-
       <Grid item xs={4}>
         <Button
           onClick={submitData}
