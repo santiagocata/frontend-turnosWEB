@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridApi, GridCellValue } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
-import { AiOutlineCheck } from "react-icons/ai";
+import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
+import { BsFillAlarmFill } from "react-icons/bs";
 import { LogContext } from "../context/UserContext";
 import { useContext } from "react";
 import axios from "axios";
@@ -31,26 +32,107 @@ export default function GridTurns() {
     },
 
     {
-      field: "action",
-      headerName: "Asistencia",
+      field: "actions",
+      headerName: "Asistió",
       sortable: false,
 
       renderCell: (params) => {
         const onClick = (e) => {
-          asistTurn(params.row.user.id, params.row.user.state);
+          asistTurn(params.row.user.id, "assisted");
           setLoading(!loading);
         };
 
-        if (params.row.state === "assisted")
+        if (
+          params.row.state === "assisted" ||
+          params.row.state === "missed" ||
+          params.row.state === "canceled"
+        )
           return (
             <Button
-              style={{ color: "black", cursor: "default" }}
+              disabled={true}
+              style={
+                params.row.state == "assisted"
+                  ? { color: "lightgreen", cursor: "default" }
+                  : params.row.state == "missed"
+                  ? { color: "red", cursor: "default" }
+                  : { color: "gray", cursor: "default" }
+              }
               startIcon={<AiOutlineCheck />}
             ></Button>
           );
 
         return (
           <Button onClick={onClick} startIcon={<AiOutlineCheck />}></Button>
+        );
+      },
+    },
+    {
+      field: "action",
+      headerName: "Faltó",
+      sortable: false,
+
+      renderCell: (params) => {
+        const onClick = (e) => {
+          asistTurn(params.row.user.id, "missed");
+          setLoading(!loading);
+        };
+
+        if (
+          params.row.state === "assisted" ||
+          params.row.state === "missed" ||
+          params.row.state === "canceled"
+        )
+          return (
+            <Button
+              disabled={true}
+              style={
+                params.row.state == "assisted"
+                  ? { color: "lightgreen", cursor: "default" }
+                  : params.row.state == "missed"
+                  ? { color: "red", cursor: "default" }
+                  : { color: "gray", cursor: "default" }
+              }
+              startIcon={<BsFillAlarmFill />}
+            ></Button>
+          );
+
+        return (
+          <Button onClick={onClick} startIcon={<BsFillAlarmFill />}></Button>
+        );
+      },
+    },
+    {
+      field: "actionss",
+      headerName: "Cancelar",
+      sortable: false,
+
+      renderCell: (params) => {
+        const onClick = (e) => {
+          asistTurn(params.row.user.id, "cancel");
+          setLoading(!loading);
+        };
+
+        if (
+          params.row.state === "assisted" ||
+          params.row.state === "missed" ||
+          params.row.state === "canceled"
+        )
+          return (
+            <Button
+              disabled={true}
+              style={
+                params.row.state == "assisted"
+                  ? { color: "lightgreen", cursor: "default" }
+                  : params.row.state == "missed"
+                  ? { color: "red", cursor: "default" }
+                  : { color: "gray", cursor: "default" }
+              }
+              startIcon={<AiOutlineClose />}
+            ></Button>
+          );
+
+        return (
+          <Button onClick={onClick} startIcon={<AiOutlineClose />}></Button>
         );
       },
     },
@@ -73,7 +155,9 @@ export default function GridTurns() {
 
   const asistTurn = async (id, state) => {
     console.log(id);
-    await axios.put(`/turn/state/${state}/${id}`);
+    await axios.put(`/turn/state/${state}/${id}`).catch((err) => {
+      alert("No se pueden cancelar turnos a menos de 2 horas de su horario");
+    });
   };
 
   return (
