@@ -12,7 +12,8 @@ import SetNewPassword from "./components/SetNewPassword";
 import ChangePassword from "./components/ChangePassword";
 import SingleTurn from "./components/SingleTurn";
 import ChangeTurn from "./components/ChangeTurn";
-import Footer from "./components/Footer";
+import Footer from "./components/Footer"
+
 
 import { Navigate, Route, Routes } from "react-router";
 import axios from "axios";
