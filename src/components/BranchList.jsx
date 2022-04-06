@@ -1,11 +1,12 @@
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import AdminView from "./AdminView";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import axios from "axios";
 
 function BranchList() {
   const [visibility, setVisibility] = useState(false);
@@ -13,8 +14,15 @@ function BranchList() {
 
   const deleteBranch = (id) => {
     const newBranchs = branchs.filter((row) => row.id !== id);
+    axios.delete(`http://localhost:3001/branch/${id}`);
     setBranchs(newBranchs);
   };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/branch/adminview")
+      .then((res) => setBranchs(res.data));
+  }, []);
 
   const columns = [
     {
@@ -22,20 +30,25 @@ function BranchList() {
       headerName: "Nombre",
       width: 140,
     },
-    { field: "email", headerName: "Email", width: 200 },
+    {
+      field: "user",
+      headerName: "Email",
+      valueGetter: (params) => params.row.user.email,
+      width: 200,
+    },
     { field: "coords", headerName: "Coordenadas", width: 200 },
     { field: "maxPerTurn", headerName: "Turnos", width: 120 },
     {
       field: "turnRange",
       headerName: "Rango Horario",
       valueGetter: (params) => {
-        console.log({ params });
-        return (
-          "Desde las " +
-          params.row.turnRange.startHours +
-          " a las " +
-          params.row.turnRange.endHours
-        );
+        const obj = JSON.parse(params.row.turnRange);
+        let hours = [];
+        if (obj.open < 10) hours.push(`0${obj.open}:00`);
+        else hours.push(`${obj.open}:00`);
+        if (obj.close < 10) hours.push(`0${obj.close}:00`);
+        else hours.push(`${obj.close}:00`);
+        return "Desde las " + hours[0] + " a las " + hours[1];
       },
       width: 200,
     },
@@ -76,7 +89,6 @@ function BranchList() {
         </Fab>
       </div>
       <AdminView
-        branchs={branchs}
         setBranchs={setBranchs}
         visibility={visibility}
         setVisibility={setVisibility}
