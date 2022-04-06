@@ -19,6 +19,8 @@ import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 
 import { useParams } from "react-router";
+import Swal from "sweetalert2";
+
 
 import { LogContext } from "../context/UserContext";
 
@@ -57,7 +59,13 @@ export default function ChangePassword() {
     axios
       .put(`/user/password/change/${user.id}`, { ...data, email: user.email })
       .then((res) => {
-        alert("Cambio de contraseña exitoso");
+        Swal.fire({
+          position: "center",
+          icon: "info",
+          title: "Se ha modificado su contraseña",
+          showConfirmButton: false,
+          timer: 2000,
+        });
         navigate("/");
       })
       .catch((err) => setEmailErrorMsg(true));

@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import ResponsiveGrid from "./commons/Grid";
 import AdminView from "./components/AdminView";
 import BranchList from "./components/BranchList";
-import SingleView from "./commons/SingleView";
+import PickTurn from "./components/PickTurn";
 import NotFound from "./commons/NotFound";
 import GridTurns from "./components/GridTurns";
 import ForgotPassword from "./components/ForgotPassword";
@@ -47,7 +47,7 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         {user?.role === "client" && (
-          <Route path="/book/:id" element={<SingleView />} />
+          <Route path="/book/:id" element={<PickTurn />} />
         )}
 
         {user?.role === "admin" && (
@@ -71,7 +71,7 @@ function App() {
         <Route path="404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="404" />} />
       </Routes>
-      <Footer />
+     {/*  <Footer /> */}
     </>
   );
 }

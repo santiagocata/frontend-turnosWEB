@@ -15,6 +15,8 @@ import { Link } from "react-router-dom";
 import { LogContext } from "../context/UserContext";
 import { useContext, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import CssBaseline from "@mui/material/CssBaseline";
+
 
 const pages = ["Products", "Pricing", "Blog"];
 
@@ -48,6 +50,8 @@ const Navbar = () => {
   ];
   return (
     <AppBar position="static" sx={{ backgroundColor: "gray" }}>
+            <CssBaseline />
+
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography

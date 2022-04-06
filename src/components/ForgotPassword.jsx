@@ -13,6 +13,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import MuiAlert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
@@ -53,7 +54,13 @@ export default function ForgotPassword() {
     axios
       .post("/user/password/forgot", data)
       .then((res) => {
-        alert("Revise su casilla de correo");
+        Swal.fire({
+          position: "center",
+          icon: "info",
+          title: "Revise su casilla de correo",
+          showConfirmButton: true,
+          timer: 2000,
+        });
         navigate("/");
       })
       .catch((err) => setEmailErrorMsg(true));
