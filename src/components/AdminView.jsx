@@ -8,6 +8,7 @@ import {
   InputAdornment,
   IconButton,
   InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Visibility from "@mui/icons-material/Visibility";
@@ -15,7 +16,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const AdminView = ({ setBranchs, visibility, setVisibility }) => {
+const AdminView = ({ setBranchs, setVisibility }) => {
   const [state, setState] = useState({
     form: {
       name: "",
@@ -28,20 +29,41 @@ const AdminView = ({ setBranchs, visibility, setVisibility }) => {
         close: 0,
       },
     },
+    error: "",
     showPassword: false,
+    style: { m: 1, width: "25ch" },
   });
   const [hours, setHours] = useState(["00:00"]);
 
   useEffect(() => {
-    const array = ["00:00"];
-    for (let i = 1; i <= 24; i++) {
+    const array = [];
+    for (let i = 0; i <= 24; i++) {
       if (i < 10) array.push(`0${i}:00`);
       else array.push(`${i}:00`);
     }
     setHours(array);
   }, []);
 
-  const style = { m: 1, width: "25ch" };
+  const handleEmptyValue = (form) => {
+    setState({ ...state, error: "" });
+    const keys = Object.keys(form);
+    const values = Object.values(form);
+    for (let i = 0; i < values.length; i++) {
+      if (values[i] === "") {
+        setState({ ...state, error: keys[i] });
+        return false;
+      }
+    }
+    if (form.turnRange.open >= form.turnRange.close) {
+      setState({ ...state, error: "turnRange" });
+      return false;
+    }
+    if (form.password.length < 8) {
+      setState({ ...state, error: "passwordLength" });
+      return false;
+    }
+    return true;
+  };
 
   const handleClickShowPassword = () => {
     setState({
@@ -55,6 +77,7 @@ const AdminView = ({ setBranchs, visibility, setVisibility }) => {
       setState({
         ...state,
         form: { ...state.form, [e.target.name]: e.target.value },
+        error: "",
       });
     } else {
       let hour = e.target.value[0] + e.target.value[1];
@@ -68,17 +91,20 @@ const AdminView = ({ setBranchs, visibility, setVisibility }) => {
             [e.target.name]: parseInt(hour),
           },
         },
+        error: "",
       });
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(state.form);
-    await axios.post("http://localhost:3001/branch/register", state.form);
-    const branchs = await axios.get("http://localhost:3001/branch/adminview");
-    setBranchs(branchs.data);
-    setVisibility(!visibility);
+    handleEmptyValue(state.form);
+    if (handleEmptyValue(state.form)) {
+      await axios.post("http://localhost:3001/branch/register", state.form);
+      const branchs = await axios.get("http://localhost:3001/branch/adminview");
+      setBranchs(branchs.data);
+      setVisibility(false);
+    }
   };
 
   return (
@@ -95,22 +121,27 @@ const AdminView = ({ setBranchs, visibility, setVisibility }) => {
         >
           <Box>
             <TextField
-              sx={style}
-              label="Name"
+              sx={state.style}
+              error={state.error === "name"}
+              label="Nombre"
               name="name"
               variant="outlined"
               onChange={handleChange}
+              helperText={state.error === "name" ? "Respuesta Inválida" : ""}
             ></TextField>
           </Box>
           <Box>
-            <FormControl sx={style}>
-              <InputLabel id="demo-simple-select-label">Start Hour</InputLabel>
+            <FormControl sx={state.style}>
+              <InputLabel id="demo-simple-select-label">
+                Hora inicial
+              </InputLabel>
               <Select
+                error={state.error === "turnRange"}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 name="open"
                 defaultValue={hours[0]}
-                label="Start Hour"
+                label="Hora Inicial"
                 onChange={(e) => handleChange(e, "turnRange")}
               >
                 {hours.map((value, index) => {
@@ -121,15 +152,21 @@ const AdminView = ({ setBranchs, visibility, setVisibility }) => {
                   );
                 })}
               </Select>
+              {state.error === "turnRange" ? (
+                <FormHelperText error>Franja Horaria Inválida</FormHelperText>
+              ) : (
+                <></>
+              )}
             </FormControl>
-            <FormControl sx={style}>
-              <InputLabel id="demo-simple-select-label">End Hour</InputLabel>
+            <FormControl sx={state.style}>
+              <InputLabel id="demo-simple-select-label">Hora final</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
+                error={state.error === "turnRange"}
                 id="demo-simple-select"
                 name="close"
                 defaultValue={hours[0]}
-                label="End Hour"
+                label="Hora Final"
                 onChange={(e) => handleChange(e, "turnRange")}
               >
                 {hours.map((value, index) => {
@@ -140,24 +177,32 @@ const AdminView = ({ setBranchs, visibility, setVisibility }) => {
                   );
                 })}
               </Select>
+              {state.error === "turnRange" ? (
+                <FormHelperText error>Franja Horaria Inválida</FormHelperText>
+              ) : (
+                <></>
+              )}
             </FormControl>
           </Box>
           <Box>
             <TextField
-              sx={style}
-              label="Email"
+              sx={state.style}
+              error={state.error === "email"}
+              label="Mail"
               variant="outlined"
+              helperText={state.error === "email" ? "Respuesta Inválida" : ""}
               name="email"
               onChange={handleChange}
             ></TextField>
 
-            <FormControl sx={style} variant="outlined">
+            <FormControl sx={state.style} variant="outlined">
               <InputLabel htmlFor="outlined-adornment-password">
-                Password
+                Contraseña
               </InputLabel>
               <OutlinedInput
                 id="outlined-adornment-password"
                 type={state.showPassword ? "text" : "password"}
+                error={state.error === "password"}
                 name="password"
                 onChange={handleChange}
                 endAdornment={
@@ -171,24 +216,38 @@ const AdminView = ({ setBranchs, visibility, setVisibility }) => {
                     </IconButton>
                   </InputAdornment>
                 }
-                label="Password"
+                label="Contraseña"
               />
+              {state.error === "password" ? (
+                <FormHelperText error>Respuesta Inválida</FormHelperText>
+              ) : (
+                <></>
+              )}
+              {state.error === "passwordLength" ? (
+                <FormHelperText error>Mínimo 8 Carácteres</FormHelperText>
+              ) : (
+                <></>
+              )}
             </FormControl>
           </Box>
           <Box>
             <TextField
-              sx={style}
-              label="Quantity"
+              defaultValue={1}
+              sx={state.style}
+              label="Cantidad de turnos"
               type="number"
               name="maxPerTurn"
               variant="outlined"
+              InputProps={{ inputProps: { min: 1 } }}
               onChange={handleChange}
             ></TextField>
             <TextField
-              sx={style}
-              label="Coordinates"
+              sx={state.style}
+              error={state.error === "coords"}
+              label="Coordenadas"
               name="coords"
               variant="outlined"
+              helperText={state.error === "coords" ? "Respuesta Inválida" : ""}
               onChange={handleChange}
             ></TextField>
           </Box>
