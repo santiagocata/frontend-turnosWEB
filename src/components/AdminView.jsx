@@ -13,19 +13,19 @@ import Button from "@mui/material/Button";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
-const AdminView = ({ branchs, setBranchs, visibility, setVisibility }) => {
+const AdminView = ({ setBranchs, visibility, setVisibility }) => {
   const [state, setState] = useState({
     form: {
-      id: branchs.length + 1,
       name: "",
       email: "",
       password: "",
       coords: "",
       maxPerTurn: 0,
       turnRange: {
-        startHours: "00:00",
-        endHours: "00:00",
+        open: 0,
+        close: 0,
       },
     },
     showPassword: false,
@@ -35,7 +35,8 @@ const AdminView = ({ branchs, setBranchs, visibility, setVisibility }) => {
   useEffect(() => {
     const array = ["00:00"];
     for (let i = 1; i <= 24; i++) {
-      array.push(`${i}:00`);
+      if (i < 10) array.push(`0${i}:00`);
+      else array.push(`${i}:00`);
     }
     setHours(array);
   }, []);
@@ -50,27 +51,33 @@ const AdminView = ({ branchs, setBranchs, visibility, setVisibility }) => {
   };
 
   const handleChange = (e, turnRange) => {
-    turnRange === undefined
-      ? setState({
-          ...state,
-          form: { ...state.form, [e.target.name]: e.target.value },
-        })
-      : setState({
-          ...state,
-          form: {
-            ...state.form,
-            turnRange: {
-              ...state.form.turnRange,
-              [e.target.name]: e.target.value,
-            },
+    if (turnRange === undefined) {
+      setState({
+        ...state,
+        form: { ...state.form, [e.target.name]: e.target.value },
+      });
+    } else {
+      let hour = e.target.value[0] + e.target.value[1];
+      if (hour[0] === "0") hour = hour[1];
+      setState({
+        ...state,
+        form: {
+          ...state.form,
+          turnRange: {
+            ...state.form.turnRange,
+            [e.target.name]: parseInt(hour),
           },
-        });
+        },
+      });
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(state.form);
-    setBranchs([...branchs, state.form]);
+    await axios.post("http://localhost:3001/branch/register", state.form);
+    const branchs = await axios.get("http://localhost:3001/branch/adminview");
+    setBranchs(branchs.data);
     setVisibility(!visibility);
   };
 
@@ -101,7 +108,7 @@ const AdminView = ({ branchs, setBranchs, visibility, setVisibility }) => {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                name="startHours"
+                name="open"
                 defaultValue={hours[0]}
                 label="Start Hour"
                 onChange={(e) => handleChange(e, "turnRange")}
@@ -120,7 +127,7 @@ const AdminView = ({ branchs, setBranchs, visibility, setVisibility }) => {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                name="endHours"
+                name="close"
                 defaultValue={hours[0]}
                 label="End Hour"
                 onChange={(e) => handleChange(e, "turnRange")}
