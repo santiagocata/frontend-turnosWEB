@@ -9,6 +9,7 @@ import axios from "axios";
 import { LogContext } from "../context/UserContext";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function SingleTurn() {
   const [turn, setTurn] = useState({});
@@ -26,11 +27,23 @@ export default function SingleTurn() {
     axios
       .put(`turn/state/cancel/${user.id}`)
       .then((turn) => {
-        alert("Turno cancelado");
+        Swal.fire({
+          position: "center",
+          icon: "info",
+          title: "Su turno se ha cancelado",
+          showConfirmButton: true,
+          timer: 2000,
+        });
         navigate("/");
       })
       .catch(() =>
-        alert("No se puede cancelar con menos de 2hs de antelación")
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: "No se puede cancelar con menos de 2hs de antelación",
+          showConfirmButton: false,
+          timer: 2000,
+        })
       );
   };
 

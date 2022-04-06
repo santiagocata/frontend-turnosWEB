@@ -14,20 +14,19 @@ import Select from "@mui/material/Select";
 import { useParams } from "react-router";
 import genTurns from "../utils/genTurns";
 import Countdown from "react-countdown";
+import Swal from "sweetalert2";
 
 import axios from "axios";
 
 import { useNavigate, Navigate } from "react-router-dom";
 
-export default function SingleView() {
+export default function PickTurnSelect({ id }) {
   const today = new Date().toISOString().slice(0, 10);
   const [date, setDate] = useState(today);
   const [time, setTime] = useState("");
   const [status, setStatus] = useState({});
   const [availability, setAvailability] = useState("");
   const [branch, setBranch] = useState({});
-
-  const { id } = useParams();
 
   const navigate = useNavigate();
 
@@ -39,7 +38,23 @@ export default function SingleView() {
         time: time,
       })
       .then((data) => {
-        alert("Turno reservado");
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Turno reservado",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate("/");
+      })
+      .catch(() => {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Ya posee un turno pendiente",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         navigate("/");
       });
   };
@@ -51,7 +66,7 @@ export default function SingleView() {
   }, []);
 
   useEffect(() => {
-    axios.get(`/turn/disponibility/${id}/${date}`).then((status) => {
+    axios.get(`/branch/disponibility/${id}/${date}`).then((status) => {
       setStatus(status.data);
     });
   }, [date]);
@@ -60,41 +75,8 @@ export default function SingleView() {
     return <></>;
   }
 
-  const renderer = ({ hours, minutes, seconds, completed }) => {
-    if (completed) {
-      alert("Ha caducado su sesión")
-      return <Navigate to="/" />;
-    } else {
-      return (
-        <TextField
-          sx={{ width: 220 }}
-          id="outlined-read-only-input-time"
-          label="Tiempo restante"
-          value={minutes + ":" + seconds}
-          disabled
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-      );
-    }
-  };
-
   return (
-    <Grid
-      container
-      spacing={2}
-      direction="column"
-      justifyContent="center"
-      alignItems="center"
-      sx={{
-        p: "60px",
-      }}
-    >
-      <Grid item xs={4}>
-        <Countdown date={Date.now() + 10000} renderer={renderer} />
-      </Grid>
-
+    <>
       <Grid item xs={4}>
         <TextField
           sx={{ width: 220 }}
@@ -167,6 +149,6 @@ export default function SingleView() {
           RESERVAR
         </Button>
       </Grid>
-    </Grid>
+    </>
   );
 }

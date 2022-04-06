@@ -13,6 +13,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
+
 
 import MuiAlert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
@@ -42,7 +44,6 @@ const theme = createTheme();
 
 export default function SetNewPassword() {
   const { token } = useParams();
-  console.log(token);
 
   const navigate = useNavigate();
   const {
@@ -58,7 +59,13 @@ export default function SetNewPassword() {
     axios
       .post(`/user/password/reset/${token}`, data)
       .then((res) => {
-        alert("Cambio de contraseña exitoso");
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Su contraseña se ha modificado",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         navigate("/");
       })
       .catch((err) => setEmailErrorMsg(true));

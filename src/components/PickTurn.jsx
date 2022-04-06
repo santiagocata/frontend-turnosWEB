@@ -20,9 +20,9 @@ import axios from "axios";
 
 import { useNavigate, Navigate } from "react-router-dom";
 
-import ChangeTurnSelect from "./ChangeTurnSelect";
+import PickTurnSelect from "./PickTurnSelect";
 
-export default function ChangeTurn() {
+export default function PickTurn() {
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -67,7 +67,7 @@ export default function ChangeTurn() {
       <Grid item xs={4}>
         <Countdown date={Date.now() + 30000} renderer={renderer} />
       </Grid>
-      <ChangeTurnSelect id={id} />
+      <PickTurnSelect id={id} />
     </Grid>
   );
 }
