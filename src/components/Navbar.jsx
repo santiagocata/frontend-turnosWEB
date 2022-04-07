@@ -17,7 +17,6 @@ import { useContext, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
 
-
 const pages = ["Products", "Pricing", "Blog"];
 
 const Navbar = () => {
@@ -48,9 +47,10 @@ const Navbar = () => {
       : { to: "myturn", text: "Mi Turno" },
     { to: "changepassword", text: "Cambiar Contraseña" },
   ];
+
   return (
     <AppBar position="static" sx={{ backgroundColor: "gray" }}>
-            <CssBaseline />
+      <CssBaseline />
 
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -134,9 +134,7 @@ const Navbar = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar
-                    alt={user.name} src="/static/images/avatar/2.jpg" 
-                  />
+                  <Avatar alt={user.name} src="/static/images/avatar/2.jpg" />
                 </IconButton>
               </Tooltip>
               <Menu
