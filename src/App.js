@@ -12,9 +12,9 @@ import SetNewPassword from "./components/SetNewPassword";
 import ChangePassword from "./components/ChangePassword";
 import SingleTurn from "./components/SingleTurn";
 import ChangeTurn from "./components/ChangeTurn";
-import Footer from "./components/Footer"
-import SimpleMap from "./components/Map"
-
+import Footer from "./components/Footer";
+import SimpleMap from "./components/Map";
+import StastSuc from "./components/StastSuc";
 
 import { Navigate, Route, Routes } from "react-router";
 import axios from "axios";
@@ -59,7 +59,10 @@ function App() {
         )}
 
         {user?.role === "operator" && (
-          <Route path="/turn" element={<GridTurns />} />
+          <>
+            <Route path="/turn" element={<GridTurns />} />
+            <Route path="/stats" element={<StastSuc />} />
+          </>
         )}
 
         <Route path="/myturn" element={<SingleTurn />} />
@@ -73,7 +76,7 @@ function App() {
         <Route path="404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="404" />} />
       </Routes>
-     {/*  <Footer /> */}
+      {/*  <Footer /> */}
     </>
   );
 }
