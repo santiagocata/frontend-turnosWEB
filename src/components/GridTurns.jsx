@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { DataGrid, GridColDef, GridApi, GridCellValue } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 import { BsFillAlarmFill } from "react-icons/bs";
@@ -51,9 +53,9 @@ export default function GridTurns() {
             <Button
               disabled={true}
               style={
-                params.row.state == "assisted"
+                params.row.state === "assisted"
                   ? { color: "lightgreen", cursor: "default" }
-                  : params.row.state == "missed"
+                  : params.row.state === "missed"
                   ? { color: "red", cursor: "default" }
                   : { color: "gray", cursor: "default" }
               }
@@ -86,9 +88,9 @@ export default function GridTurns() {
             <Button
               disabled={true}
               style={
-                params.row.state == "assisted"
+                params.row.state === "assisted"
                   ? { color: "lightgreen", cursor: "default" }
-                  : params.row.state == "missed"
+                  : params.row.state === "missed"
                   ? { color: "red", cursor: "default" }
                   : { color: "gray", cursor: "default" }
               }
@@ -121,9 +123,9 @@ export default function GridTurns() {
             <Button
               disabled={true}
               style={
-                params.row.state == "assisted"
+                params.row.state === "assisted"
                   ? { color: "lightgreen", cursor: "default" }
-                  : params.row.state == "missed"
+                  : params.row.state === "missed"
                   ? { color: "red", cursor: "default" }
                   : { color: "gray", cursor: "default" }
               }
@@ -154,7 +156,6 @@ export default function GridTurns() {
   const [pageSize, setPageSize] = useState(10);
 
   const asistTurn = async (id, state) => {
-    console.log(id);
     await axios.put(`/turn/state/${state}/${id}`).catch((err) => {
       alert("No se pueden cancelar turnos a menos de 2 horas de su horario");
     });
@@ -164,6 +165,23 @@ export default function GridTurns() {
     <>
       <h1 style={{ textAlign: "center" }}>Panel de turnos</h1>
       <div style={{ height: 600, width: "100%" }}>
+        <Grid item xs={4} style={{ textAlign: "center" }}>
+          <TextField
+            sx={{ width: 220, mb: 2 }}
+            value={date}
+            onChange={(e) => {
+              setDate(e.target.value);
+              setLoading(!loading);
+              petitionGet();
+            }}
+            id="date"
+            label="Elige el día"
+            type="date"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </Grid>
         <DataGrid
           pageSize={pageSize}
           onPageSizeChange={(newPage) => setPageSize(newPage)}
