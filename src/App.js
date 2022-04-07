@@ -13,6 +13,7 @@ import ChangePassword from "./components/ChangePassword";
 import SingleTurn from "./components/SingleTurn";
 import ChangeTurn from "./components/ChangeTurn";
 import Footer from "./components/Footer"
+import SimpleMap from "./components/Map"
 
 
 import { Navigate, Route, Routes } from "react-router";
@@ -67,6 +68,7 @@ function App() {
 
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/reset/:token" element={<SetNewPassword />} />
+        <Route path="/map" element={<SimpleMap />} />
 
         <Route path="404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="404" />} />
