@@ -15,14 +15,19 @@ import { useParams } from "react-router";
 import genTurns from "../utils/genTurns";
 
 import axios from "axios";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import DatePicker from "@mui/lab/DatePicker";
 
 import { useNavigate } from "react-router-dom";
 import { LogContext } from "../context/UserContext";
 import Swal from "sweetalert2";
 
 export default function ChangeTurnSelect() {
-  const today = new Date().toISOString().slice(0, 10);
-  const [date, setDate] = useState(today);
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const [date, setDate] = useState(tomorrow);
   const [time, setTime] = useState("");
   const [status, setStatus] = useState({});
   const [availability, setAvailability] = useState("");
@@ -37,7 +42,7 @@ export default function ChangeTurnSelect() {
   const submitData = () => {
     axios
       .put(`/turn/edit/${user.id}`, {
-        date: date,
+        date: date.toISOString().slice(0, 10),
         time: time,
       })
       .then((data) => {
@@ -69,10 +74,16 @@ export default function ChangeTurnSelect() {
   }, []);
 
   useEffect(() => {
-    axios.get(`/branch/disponibility/${id}/${date}`).then((status) => {
-      setStatus(status.data);
-    });
+    axios
+      .get(`/branch/disponibility/${id}/${date.toISOString().slice(0, 10)}`)
+      .then((status) => {
+        setStatus(status.data);
+      });
   }, [date]);
+
+  function disableWeekends(date) {
+    return date.getDay() === 0 || date.getDay() === 6;
+  }
 
   if (!branch.turnRange) {
     return null;
@@ -81,24 +92,23 @@ export default function ChangeTurnSelect() {
   return (
     <>
       <Grid item xs={4}>
-        <TextField
-          sx={{ width: 220 }}
-          value={date}
-          onChange={(e) => {
-            setDate(e.target.value);
-            setTime("");
-            setAvailability("");
-          }}
-          id="date"
-          label="Elige el día"
-          type="date"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          inputProps={{
-            min: new Date().toISOString().slice(0, 10),
-          }}
-        />
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label="Elige el día"
+            value={date}
+            inputFormat="dd/MM/yyyy"
+            onChange={(e) => {
+              setDate(e);
+              setTime("");
+              setAvailability("");
+            }}
+            shouldDisableDate={disableWeekends}
+            minDate={tomorrow}
+            renderInput={(params) => (
+              <TextField sx={{ width: 220 }} {...params} />
+            )}
+          />
+        </LocalizationProvider>
       </Grid>
       <Grid item xs={4}>
         <FormControl>
