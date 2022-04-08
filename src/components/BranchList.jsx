@@ -7,15 +7,25 @@ import AddIcon from "@mui/icons-material/Add";
 import AdminView from "./AdminView";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import axios from "axios";
+import EditIcon from "@mui/icons-material/Edit";
 
 function BranchList() {
   const [visibility, setVisibility] = useState(false);
+  const [type, setType] = useState("add");
   const [branchs, setBranchs] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState({});
 
   const deleteBranch = (id) => {
     const newBranchs = branchs.filter((row) => row.id !== id);
     axios.delete(`http://localhost:3001/branch/${id}`);
     setBranchs(newBranchs);
+  };
+
+  const editBranch = (id) => {
+    const branch = branchs.filter((row) => row.id === id);
+    setSelectedBranch(branch);
+    setType("edit");
+    setVisibility(true);
   };
 
   useEffect(() => {
@@ -58,6 +68,12 @@ function BranchList() {
       width: 80,
       getActions: (params) => [
         <GridActionsCellItem
+          icon={<EditIcon />}
+          label="Edit"
+          onClick={() => editBranch(params.id)}
+          showInMenu
+        />,
+        <GridActionsCellItem
           icon={<DeleteIcon />}
           label="Delete"
           onClick={() => deleteBranch(params.id)}
@@ -69,30 +85,59 @@ function BranchList() {
 
   const toggleVissibility = (e) => {
     e.preventDefault();
+    setType("add");
+    setSelectedBranch([]);
     setVisibility(!visibility);
   };
 
   return visibility ? (
     <>
-      <div style={{ position: "relative", right: "238px" }}>
-        <Fab
-          sx={{
-            position: "absolute",
-            left: "50vw",
-            top: 105,
-          }}
-          aria-label="Add"
-          color="primary"
-          onClick={toggleVissibility}
-        >
-          <ArrowBackIcon />
-        </Fab>
-      </div>
-      <AdminView
-        setBranchs={setBranchs}
-        visibility={visibility}
-        setVisibility={setVisibility}
-      ></AdminView>
+      {type === "add" ? (
+        <>
+          <div style={{ position: "relative", right: "238px" }}>
+            <Fab
+              sx={{
+                position: "absolute",
+                left: "50vw",
+                top: 105,
+              }}
+              aria-label="Add"
+              color="primary"
+              onClick={toggleVissibility}
+            >
+              <ArrowBackIcon />
+            </Fab>
+          </div>
+          <AdminView
+            type={type}
+            setBranchs={setBranchs}
+            setVisibility={setVisibility}
+          ></AdminView>
+        </>
+      ) : (
+        <>
+          <div style={{ position: "relative", right: "238px" }}>
+            <Fab
+              sx={{
+                position: "absolute",
+                left: "50vw",
+                top: 105,
+              }}
+              aria-label="Add"
+              color="primary"
+              onClick={toggleVissibility}
+            >
+              <ArrowBackIcon />
+            </Fab>
+          </div>
+          <AdminView
+            type={type}
+            selectedBranch={selectedBranch}
+            setBranchs={setBranchs}
+            setVisibility={setVisibility}
+          ></AdminView>
+        </>
+      )}
     </>
   ) : (
     <Box
