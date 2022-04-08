@@ -16,7 +16,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const AdminView = ({ setBranchs, setVisibility }) => {
+const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
   const [state, setState] = useState({
     form: {
       name: "",
@@ -42,6 +42,19 @@ const AdminView = ({ setBranchs, setVisibility }) => {
       else array.push(`${i}:00`);
     }
     setHours(array);
+
+    if (selectedBranch && selectedBranch[0]) {
+      const { name, user, coords, maxPerTurn, turnRange } = selectedBranch[0];
+      const editForm = {
+        name: name,
+        email: user.email,
+        password: "",
+        coords: coords,
+        maxPerTurn: maxPerTurn,
+        turnRange: JSON.parse(turnRange),
+      };
+      setState({ ...state, form: editForm });
+    }
   }, []);
 
   const handleEmptyValue = (form) => {
@@ -58,7 +71,7 @@ const AdminView = ({ setBranchs, setVisibility }) => {
       setState({ ...state, error: "turnRange" });
       return false;
     }
-    if (form.password.length < 8) {
+    if (form.password && form.password.length < 8) {
       setState({ ...state, error: "passwordLength" });
       return false;
     }
@@ -98,9 +111,23 @@ const AdminView = ({ setBranchs, setVisibility }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    handleEmptyValue(state.form);
-    if (handleEmptyValue(state.form)) {
-      await axios.post("http://localhost:3001/branch/register", state.form);
+    console.log(type);
+    if (type === "add") {
+      handleEmptyValue(state.form);
+      if (handleEmptyValue(state.form)) {
+        await axios.post("http://localhost:3001/branch/register", state.form);
+        const branchs = await axios.get(
+          "http://localhost:3001/branch/adminview"
+        );
+        setBranchs(branchs.data);
+        setVisibility(false);
+      }
+    }
+    if (type === "edit") {
+      await axios.put(
+        `http://localhost:3001/branch/${selectedBranch[0].id}`,
+        state.form
+      );
       const branchs = await axios.get("http://localhost:3001/branch/adminview");
       setBranchs(branchs.data);
       setVisibility(false);
@@ -115,7 +142,11 @@ const AdminView = ({ setBranchs, setVisibility }) => {
       justifyContent="center"
     >
       <Box>
-        <h1>Añadir nueva sucursal</h1>
+        {type === "add" ? (
+          <h1>Añadir nueva sucursal</h1>
+        ) : (
+          <h1>Editar sucursal</h1>
+        )}
         <Box
           sx={{ display: "flex", flexWrap: "wrap", flexDirection: "column" }}
         >
@@ -125,6 +156,7 @@ const AdminView = ({ setBranchs, setVisibility }) => {
               error={state.error === "name"}
               label="Nombre"
               name="name"
+              value={state.form.name || ""}
               variant="outlined"
               onChange={handleChange}
               helperText={state.error === "name" ? "Respuesta Inválida" : ""}
@@ -141,6 +173,7 @@ const AdminView = ({ setBranchs, setVisibility }) => {
                 id="demo-simple-select"
                 name="open"
                 defaultValue={hours[0]}
+                value={hours[state.form.turnRange.open]}
                 label="Hora Inicial"
                 onChange={(e) => handleChange(e, "turnRange")}
               >
@@ -166,6 +199,7 @@ const AdminView = ({ setBranchs, setVisibility }) => {
                 id="demo-simple-select"
                 name="close"
                 defaultValue={hours[0]}
+                value={hours[state.form.turnRange.close]}
                 label="Hora Final"
                 onChange={(e) => handleChange(e, "turnRange")}
               >
@@ -189,6 +223,7 @@ const AdminView = ({ setBranchs, setVisibility }) => {
               sx={state.style}
               error={state.error === "email"}
               label="Mail"
+              value={state.form.email}
               variant="outlined"
               helperText={state.error === "email" ? "Respuesta Inválida" : ""}
               name="email"
@@ -237,6 +272,7 @@ const AdminView = ({ setBranchs, setVisibility }) => {
               label="Cantidad de turnos"
               type="number"
               name="maxPerTurn"
+              value={state.form.maxPerTurn}
               variant="outlined"
               InputProps={{ inputProps: { min: 1 } }}
               onChange={handleChange}
@@ -247,6 +283,8 @@ const AdminView = ({ setBranchs, setVisibility }) => {
               label="Coordenadas"
               name="coords"
               variant="outlined"
+              defaultValue={"-90.000, -180.0000"}
+              value={state.form.coords}
               helperText={state.error === "coords" ? "Respuesta Inválida" : ""}
               onChange={handleChange}
             ></TextField>
