@@ -27,7 +27,7 @@ export default function PickTurnSelect({ id }) {
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const [date, setDate] = useState(tomorrow);
+  const [date, setDate] = useState(null);
   const [time, setTime] = useState("");
   const [status, setStatus] = useState({});
   const [availability, setAvailability] = useState("");
@@ -52,11 +52,11 @@ export default function PickTurnSelect({ id }) {
         });
         navigate("/");
       })
-      .catch(() => {
+      .catch((msg) => {
         Swal.fire({
           position: "center",
           icon: "error",
-          title: "Ya posee un turno pendiente",
+          title: msg.request.response,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -71,11 +71,13 @@ export default function PickTurnSelect({ id }) {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(`/branch/disponibility/${id}/${date.toISOString().slice(0, 10)}`)
-      .then((status) => {
-        setStatus(status.data);
-      });
+    if (date) {
+      axios
+        .get(`/branch/disponibility/${id}/${date.toISOString().slice(0, 10)}`)
+        .then((status) => {
+          setStatus(status.data);
+        });
+    }
   }, [date]);
 
   function disableWeekends(date) {
@@ -108,46 +110,59 @@ export default function PickTurnSelect({ id }) {
         </LocalizationProvider>
       </Grid>
       <Grid item xs={4}>
-        <FormControl>
-          <InputLabel>Elige el horario</InputLabel>
-          <Select sx={{ width: 220 }} value={time} label="Elige el horario">
-            {genTurns(
-              JSON.parse(branch.turnRange).open,
-              JSON.parse(branch.turnRange).close,
-              branch.maxPerTurn,
-              status
-            ).map((turn, i) => {
-              return (
-                <MenuItem
-                  onClick={() => {
-                    setTime(turn.time);
-                    setAvailability(turn.available);
-                  }}
-                  key={i}
-                  value={turn.time}
-                >
-                  {turn.time}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
+        {date != null && (
+          <FormControl>
+            <InputLabel>Elige el horario</InputLabel>
+            <Select sx={{ width: 220 }} value={time} label="Elige el horario">
+              {genTurns(
+                JSON.parse(branch.turnRange).open,
+                JSON.parse(branch.turnRange).close,
+                branch.maxPerTurn,
+                status
+              ).map((turn, i) => {
+                return (
+                  <MenuItem
+                    onClick={() => {
+                      setTime(turn.time);
+                      setAvailability(turn.available);
+                    }}
+                    key={i}
+                    value={turn.time}
+                  >
+                    {turn.time}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        )}
       </Grid>
       {!time == "" && (
         <Grid item xs={4}>
           <TextField
+            focused
             sx={{ width: 220 }}
             id="outlined-read-only-input"
             label="Turnos disponibles"
             value={availability}
-            color="success"
-            disabled
+            color={availability > 2 ? "success" : "warning"}
             InputProps={{
               readOnly: true,
             }}
           />
         </Grid>
       )}
+      <Grid item xs={4}>
+        <iframe
+          width="200"
+          height="150"
+          frameBorder="0"
+          style={{ border: 0, borderRadius: 15 }}
+          referrerPolicy="no-referrer-when-downgrade"
+          src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBfDTDBgoklx7Q1VwUL9_WxJzc69I6BNhI&q=${branch.coords}`}
+          allowFullScreen
+        ></iframe>
+      </Grid>
       <Grid item xs={4}>
         <Button
           onClick={submitData}

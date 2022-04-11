@@ -25,10 +25,7 @@ export default function ResponsiveGrid() {
       >
         {branches?.map((branch, i) => (
           <Grid item xs={1} sm={4} md={4} key={i}>
-            <ResponsiveCard
-              branch={branch}
-              image={`https://picsum.photos/200/30${i}`}
-            />
+            <ResponsiveCard branch={branch} />
           </Grid>
         ))}
       </Grid>
