@@ -67,6 +67,7 @@ export default function PickTurn() {
       <Grid item xs={4}>
         <Countdown date={Date.now() + 30000} renderer={renderer} />
       </Grid>
+
       <PickTurnSelect id={id} />
     </Grid>
   );
