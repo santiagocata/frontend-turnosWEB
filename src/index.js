@@ -12,3 +12,5 @@ ReactDOM.render(
   </LogContextProvider>,
   document.getElementById("root")
 );
+
+//ServiceWorker.register();

@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Turnos Web",
+  "name": "Reservas de Turnos presenciales",
   "icons": [
     {
       "src": "favicon.ico",
