@@ -1,5 +1,4 @@
-import * as React from "react";
-import Card from "@mui/material/Card";
+import React, {Suspense, lazy} from "react";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -7,21 +6,24 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Link } from "react-router-dom";
-import Map from "./Map"
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+
 import './card.css';
 
 export default function ResponsiveCard({ branch }) {
-  return (
+  const {coords} = branch;
+
+const Map = lazy(() => import("./Map"));
+
+ return (
     <div className="card">
       <CardMedia height="140" alt="sucursal">
-        <iframe
-            width="100%"
-            height="100%"
-            frameBorder="0"
-            style={{ border: 0 }}
-            referrerPolicy="no-referrer-when-downgrade"
-            src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBfDTDBgoklx7Q1VwUL9_WxJzc69I6BNhI&q=${branch.coords}`}
-            allowFullScreen/>
+      <Suspense fallback={ <Box sx={{ display: 'flex' }} justifyContent="center" margin="1rem 1rem">
+                                    <CircularProgress />
+                                </Box>}>
+        <Map coords= {coords}/>
+      </Suspense>
       </CardMedia>
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
