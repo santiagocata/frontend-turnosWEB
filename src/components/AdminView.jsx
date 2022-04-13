@@ -175,10 +175,10 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
       ...state,
       form: {
         ...state.form,
-        coords: unifyStrings(adress, city, country, localty),
+        coords: unifyStrings(adress, localty, city, country),
       },
     });
-    return unifyStrings(adress, city, country, localty);
+    return unifyStrings(adress, localty, city, country);
   };
 
   const setLocation = () => {
