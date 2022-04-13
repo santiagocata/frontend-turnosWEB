@@ -22,6 +22,8 @@ export default function ResponsiveGrid() {
         direction={{ xs: "column", sm: "row", md: "row" }}
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 1, sm: 12, md: 16 }}
+        justifyContent="center"
+        display="flex"
       >
         {branches?.map((branch, i) => (
           <Grid item xs={1} sm={4} md={4} key={i}>

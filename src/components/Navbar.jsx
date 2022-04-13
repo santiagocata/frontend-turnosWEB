@@ -49,7 +49,7 @@ const Navbar = () => {
   ];
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "gray" }}>
+    <AppBar position="static" sx={{ backgroundColor: "lightgrey" }}>
       <CssBaseline />
 
       <Container maxWidth="xl">
@@ -62,7 +62,7 @@ const Navbar = () => {
           >
             <Link to="/">
               <img
-                src={require("../assets/turnosWEB-logos_white.png")}
+                src={require("../assets/turnosWEB-logos_blackblue.png")}
                 height={"50px"}
                 width={"auto"}
               />

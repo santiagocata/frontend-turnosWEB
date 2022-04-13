@@ -7,20 +7,21 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Link } from "react-router-dom";
+import Map from "./Map"
+import './card.css';
 
 export default function ResponsiveCard({ branch }) {
   return (
-    <Card sx={{ maxWidth: 600 }}>
+    <div className="card">
       <CardMedia height="140" alt="sucursal">
         <iframe
-          width="100%"
-          height="100%"
-          frameBorder="0"
-          style={{ border: 0 }}
-          referrerPolicy="no-referrer-when-downgrade"
-          src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBfDTDBgoklx7Q1VwUL9_WxJzc69I6BNhI&q=${branch.coords}`}
-          allowFullScreen
-        ></iframe>
+            width="100%"
+            height="100%"
+            frameBorder="0"
+            style={{ border: 0 }}
+            referrerPolicy="no-referrer-when-downgrade"
+            src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBfDTDBgoklx7Q1VwUL9_WxJzc69I6BNhI&q=${branch.coords}`}
+            allowFullScreen/>
       </CardMedia>
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
@@ -49,6 +50,6 @@ export default function ResponsiveCard({ branch }) {
           </Button>
         </Link>
       </CardActions>
-    </Card>
+      </div>
   );
 }
