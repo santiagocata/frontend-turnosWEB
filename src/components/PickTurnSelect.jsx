@@ -15,13 +15,21 @@ import { useParams } from "react-router";
 import genTurns from "../utils/genTurns";
 import Countdown from "react-countdown";
 import Swal from "sweetalert2";
-
+import { io } from "socket.io-client";
 import axios from "axios";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
 
 import { useNavigate, Navigate } from "react-router-dom";
+
+const connectionOptions = {
+  "force new connection": true,
+  reconnectionAttempts: 1,
+  timeout: 10000,
+  transports: ["websocket"],
+  secure: true,
+};
 
 export default function PickTurnSelect({ id }) {
   const today = new Date();
@@ -32,8 +40,14 @@ export default function PickTurnSelect({ id }) {
   const [status, setStatus] = useState({});
   const [availability, setAvailability] = useState("");
   const [branch, setBranch] = useState({});
-
+  const [listener, setListener] = useState(false);
   const navigate = useNavigate();
+
+  const socket = io("http://localhost:3001", connectionOptions);
+
+  socket.on("submit", (time, message) => {
+    if (date.toISOString().slice(0, 10) === time) console.log(message);
+  });
 
   const submitData = () => {
     axios
@@ -62,6 +76,11 @@ export default function PickTurnSelect({ id }) {
         });
         navigate("/");
       });
+    socket.emit(
+      "submit",
+      date.toISOString().slice(0, 10),
+      "Un turno ha sido tomado"
+    );
   };
 
   useEffect(() => {
@@ -86,6 +105,13 @@ export default function PickTurnSelect({ id }) {
     return null;
   }
 
+  const handleChange = (e) => {
+    setDate(e);
+    setTime("");
+    setAvailability("");
+    setListener(true);
+  };
+
   return (
     <>
       <Grid item xs={4}>
@@ -94,11 +120,7 @@ export default function PickTurnSelect({ id }) {
             label="Elige el día"
             value={date}
             inputFormat="dd/MM/yyyy"
-            onChange={(e) => {
-              setDate(e);
-              setTime("");
-              setAvailability("");
-            }}
+            onChange={(e) => handleChange(e)}
             shouldDisableDate={disableWeekends}
             minDate={tomorrow}
             renderInput={(params) => (

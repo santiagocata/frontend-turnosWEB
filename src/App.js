@@ -15,11 +15,11 @@ import ChangeTurn from "./components/ChangeTurn";
 import Footer from "./components/Footer";
 import SimpleMap from "./components/Map";
 import StastSuc from "./components/StastSuc";
-
 import { Navigate, Route, Routes } from "react-router";
 import axios from "axios";
 import { LogContext } from "./context/UserContext";
 import { useContext, useEffect, useState } from "react";
+
 function App() {
   const { togleAuth, user } = useContext(LogContext);
 
