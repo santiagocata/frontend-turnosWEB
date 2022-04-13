@@ -12,6 +12,9 @@ const LocationPin = () => (
 
 // -34.6037123877597, -58.382074656939444
 
+
+// -34.603571093235956, -58.38152748633099
+
 const Map = () => {
   const zoomLevel = 20;
   const location = {
@@ -20,15 +23,16 @@ const Map = () => {
     lng: -58.3820,
   };
   return (
-    <div style={{ height: "50vh", width: "50%" }}>
-      <GoogleMapReact
-        bootstrapURLKeys={{ key: "AIzaSyBfDTDBgoklx7Q1VwUL9_WxJzc69I6BNhI" }}
-        defaultCenter={location}
-        defaultZoom={zoomLevel}
-      >
-        <LocationPin />
-      </GoogleMapReact>
-    </div>
+    <iframe 
+  width="300" 
+  height="170" 
+  frameborder="0" 
+  scrolling="no" 
+  marginheight="0" 
+  marginwidth="0" 
+  src="https://maps.google.com/maps?q=-34.60357,-58.381529&hl=es&z=14&amp;output=embed"
+ >
+ </iframe>
   );
 };
 
