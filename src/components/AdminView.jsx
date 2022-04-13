@@ -175,10 +175,10 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
       ...state,
       form: {
         ...state.form,
-        coords: unifyStrings(adress, city, country, localty),
+        coords: unifyStrings(adress, localty, city, country),
       },
     });
-    return unifyStrings(adress, city, country, localty);
+    return unifyStrings(adress, localty, city, country);
   };
 
   const setLocation = () => {
@@ -212,7 +212,6 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
       form.coords = setCoords();
       handleEmptyValue(form);
       handleEmptyValue(state.location);
-      console.log(handleEmptyValue(state.form));
       if (handleEmptyValue(state.form) && handleEmptyValue(state.location)) {
         await axios.post("/branch/register", form);
         const branchs = await axios.get("/branch/adminview");
