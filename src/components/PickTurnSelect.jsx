@@ -70,8 +70,12 @@ export default function PickTurnSelect({ id }) {
     });
   }, []);
 
+  const isDate = (date) => {
+    return new Date(date) !== "Invalid Date" && !isNaN(new Date(date));
+  };
+
   useEffect(() => {
-    if (date) {
+    if (date && isDate(date)) {
       axios
         .get(`/branch/disponibility/${id}/${date.toISOString().slice(0, 10)}`)
         .then((status) => {
@@ -96,21 +100,21 @@ export default function PickTurnSelect({ id }) {
             label="Elige el día"
             value={date}
             inputFormat="dd/MM/yyyy"
-            onChange={(e) => {
-              setDate(e);
+            onChange={(newDate) => {
+              setDate(newDate);
               setTime("");
               setAvailability("");
             }}
             shouldDisableDate={disableWeekends}
             minDate={tomorrow}
             renderInput={(params) => (
-              <TextField sx={{ width: 220 }} {...params} />
+              <TextField sx={{ width: 220 }} {...params} disabled={true} />
             )}
           />
         </LocalizationProvider>
       </Grid>
       <Grid item xs={4}>
-        {date != null && (
+        {date != null && date > today && (
           <FormControl>
             <InputLabel>Elige el horario</InputLabel>
             <Select sx={{ width: 220 }} value={time} label="Elige el horario">
