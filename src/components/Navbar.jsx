@@ -43,7 +43,7 @@ const Navbar = () => {
     user?.role == "operator"
       ? { to: "turn", text: "Panel Turnos" }
       : user?.role == "admin"
-      ? { to: "admin", text: "Nueva Sucursal" }
+      ? { to: "adminlist", text: "Panel de sucursales" }
       : { to: "myturn", text: "Mi Turno" },
     { to: "changepassword", text: "Cambiar Contraseña" },
   ];

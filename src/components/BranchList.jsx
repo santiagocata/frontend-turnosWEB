@@ -138,7 +138,7 @@ function BranchList() {
       justifyContent="center"
       flexDirection="column"
     >
-      <h1 style={{ marginBottom: "42px", marginTop: "42px" }}>Sucursales</h1>
+      <h1 style={{ marginBottom: "6vh", marginTop: "6vh" }}>Sucursales</h1>
       <Box sx={{ position: "relative" }} height={580} marginBottom={8}>
         <DataGrid
           sx={{ width: "50vw" }}
@@ -149,8 +149,10 @@ function BranchList() {
           <Fab
             sx={{
               position: "absolute",
-              left: "50vw",
-              bottom: 90,
+              left: "49.5vw",
+              bottom: 625,
+              width: 60,
+              height: 60,
             }}
             aria-label="Add"
             color="primary"

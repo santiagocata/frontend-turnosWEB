@@ -53,7 +53,7 @@ function App() {
 
         {user?.role === "admin" && (
           <>
-            <Route path="/admin" element={<AdminView />} />
+            <Route path="/admin" element={<AdminView type={"add"} />} />
             <Route path="/adminlist" element={<BranchList />} />
           </>
         )}

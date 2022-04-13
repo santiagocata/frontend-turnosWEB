@@ -23,7 +23,7 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
       email: "",
       password: "",
       coords: "",
-      maxPerTurn: 0,
+      maxPerTurn: 1,
       turnRange: {
         open: 0,
         close: 0,
@@ -178,6 +178,7 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
         coords: unifyStrings(adress, city, country, localty),
       },
     });
+    return unifyStrings(adress, city, country, localty);
   };
 
   const setLocation = () => {
@@ -206,19 +207,23 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setCoords();
     if (type === "add") {
-      handleEmptyValue(state.form);
+      const form = state.form;
+      form.coords = setCoords();
+      handleEmptyValue(form);
       handleEmptyValue(state.location);
-      if (handleEmptyValue(state.form)) {
-        await axios.post("/branch/register", state.form);
+      console.log(handleEmptyValue(state.form));
+      if (handleEmptyValue(state.form) && handleEmptyValue(state.location)) {
+        await axios.post("/branch/register", form);
         const branchs = await axios.get("/branch/adminview");
         setBranchs(branchs.data);
         setVisibility(false);
       }
     }
     if (type === "edit") {
-      await axios.put(`/branch/${selectedBranch[0].id}`, state.form);
+      const form = state.form;
+      form.coords = setCoords();
+      await axios.put(`/branch/${selectedBranch[0].id}`, form);
       const branchs = await axios.get("/branch/adminview");
       setBranchs(branchs.data);
       setVisibility(false);
@@ -371,7 +376,9 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
         frameBorder="0"
         style={{ border: 0, marginLeft: "10vw", marginTop: "1vh" }}
         referrerPolicy="no-referrer-when-downgrade"
-        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBfDTDBgoklx7Q1VwUL9_WxJzc69I6BNhI&q=${state.form.coords}`}
+        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBfDTDBgoklx7Q1VwUL9_WxJzc69I6BNhI&q=${
+          state.form.coords || "Nolocation"
+        }`}
         allowFullScreen
       ></iframe>
     </Box>
