@@ -104,7 +104,7 @@ export default function Login() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Inciar Sesión
+            Iniciar Sesión
           </Typography>
           <Box
             component="form"
