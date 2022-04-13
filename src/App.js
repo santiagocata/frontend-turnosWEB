@@ -21,9 +21,10 @@ import { LogContext } from "./context/UserContext";
 import { useContext, useEffect, useState } from "react";
 
 function App() {
-  //comment this line when the app is running locally
-  /* axios.defaults.baseURL = "https://turnos-web-backend.herokuapp.com/";
-  axios.defaults.withCredentials = true; */
+  if (process.env.NODE_ENV === "production") {
+    axios.defaults.baseURL = "https://turnos-web-backend.herokuapp.com/";
+    axios.defaults.withCredentials = true;
+  }
 
   const { togleAuth, user } = useContext(LogContext);
 
