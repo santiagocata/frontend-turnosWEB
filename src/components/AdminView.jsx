@@ -248,43 +248,51 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
           sx={{ display: "flex", flexWrap: "wrap", flexDirection: "column" }}
         >
           {createTextField("name", "Nombre")}
-          <Box>
-            {createTextField("email", "Mail")}
-            <FormControl sx={state.style} variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">
-                Contraseña
-              </InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-password"
-                type={state.showPassword ? "text" : "password"}
-                error={state.error === "password"}
-                name="password"
-                onChange={handleChange}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
-                      {state.showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Contraseña"
-              />
-              {state.error === "password" ? (
-                <FormHelperText error>Respuesta Inválida</FormHelperText>
-              ) : (
-                <></>
-              )}
-              {state.error === "passwordLength" ? (
-                <FormHelperText error>Mínimo 8 Carácteres</FormHelperText>
-              ) : (
-                <></>
-              )}
-            </FormControl>
-          </Box>
+          {type === "add" ? (
+            <Box>
+              {createTextField("email", "Mail")}
+              <FormControl sx={state.style} variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Contraseña
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  type={state.showPassword ? "text" : "password"}
+                  error={state.error === "password"}
+                  name="password"
+                  onChange={handleChange}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {state.showPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Contraseña"
+                />
+                {state.error === "password" ? (
+                  <FormHelperText error>Respuesta Inválida</FormHelperText>
+                ) : (
+                  <></>
+                )}
+                {state.error === "passwordLength" ? (
+                  <FormHelperText error>Mínimo 8 Carácteres</FormHelperText>
+                ) : (
+                  <></>
+                )}
+              </FormControl>
+            </Box>
+          ) : (
+            <></>
+          )}
           <Box>
             <FormControl sx={state.style}>
               <InputLabel id="demo-simple-select-label">
