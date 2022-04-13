@@ -13,7 +13,6 @@ import ChangePassword from "./components/ChangePassword";
 import SingleTurn from "./components/SingleTurn";
 import ChangeTurn from "./components/ChangeTurn";
 import Footer from "./components/Footer";
-import SimpleMap from "./components/Map";
 import StastSuc from "./components/StastSuc";
 import { Navigate, Route, Routes } from "react-router";
 import axios from "axios";
@@ -31,8 +30,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   useEffect(async () => {
     try {
-      const data = await axios.get("/user/me");
-      togleAuth(data.data);
+      const user = await axios.get("/user/me");
+      togleAuth(user.data);
       setLoading(false);
     } catch {
       setLoading(false);
@@ -43,40 +42,45 @@ function App() {
 
   return (
     <>
-      <Navbar />
+      {user?.role !== undefined && <Navbar />}
       <Routes>
-        <Route
-          path="/"
-          element={user?.id ? <ResponsiveGrid /> : <Login /> || <Register />}
-        />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        {user?.role === undefined && (
+          <>
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/reset/:token" element={<SetNewPassword />} />
+            <Route path="/forgotpassword" element={<ForgotPassword />} />
+          </>
+        )}
 
         {user?.role === "client" && (
-          <Route path="/book/:id" element={<PickTurn />} />
+          <>
+            <Route path="/" element={<ResponsiveGrid />} />
+            <Route path="/book/:id" element={<PickTurn />} />
+            <Route path="/myturn" element={<SingleTurn />} />
+            <Route path="/changeturn/:id" element={<ChangeTurn />} />
+            <Route path="/changepassword" element={<ChangePassword />} />
+          </>
         )}
 
         {user?.role === "admin" && (
           <>
+            <Route path="/" element={<BranchList />} />
             <Route path="/admin" element={<AdminView type={"add"} />} />
             <Route path="/adminlist" element={<BranchList />} />
+            <Route path="/changepassword" element={<ChangePassword />} />
           </>
         )}
 
         {user?.role === "operator" && (
           <>
+            <Route path="/" element={<GridTurns />} />
             <Route path="/turn" element={<GridTurns />} />
             <Route path="/stats" element={<StastSuc />} />
+            <Route path="/changepassword" element={<ChangePassword />} />
           </>
         )}
-
-        <Route path="/myturn" element={<SingleTurn />} />
-        <Route path="/changepassword" element={<ChangePassword />} />
-        <Route path="/changeturn/:id" element={<ChangeTurn />} />
-
-        <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/reset/:token" element={<SetNewPassword />} />
-        <Route path="/map" element={<SimpleMap />} />
 
         <Route path="404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="404" />} />
