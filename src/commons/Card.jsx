@@ -37,7 +37,9 @@ export default function ResponsiveCard({ branch }) {
           }}
         >
           <LocationOnIcon />
-          <span>Capital Federal</span>
+          <span>
+            {branch.coords.split(",")[1].replace("+", " ").toUpperCase()}
+          </span>
         </Typography>
       </CardContent>
       <CardActions>
