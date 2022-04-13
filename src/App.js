@@ -15,11 +15,11 @@ import ChangeTurn from "./components/ChangeTurn";
 import Footer from "./components/Footer";
 import SimpleMap from "./components/Map";
 import StastSuc from "./components/StastSuc";
-
 import { Navigate, Route, Routes } from "react-router";
 import axios from "axios";
 import { LogContext } from "./context/UserContext";
 import { useContext, useEffect, useState } from "react";
+
 function App() {
   //comment this line when the app is running locally
   /* axios.defaults.baseURL = "https://turnos-web-backend.herokuapp.com/";
@@ -57,7 +57,7 @@ function App() {
 
         {user?.role === "admin" && (
           <>
-            <Route path="/admin" element={<AdminView />} />
+            <Route path="/admin" element={<AdminView type={"add"} />} />
             <Route path="/adminlist" element={<BranchList />} />
           </>
         )}

@@ -23,11 +23,17 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
       email: "",
       password: "",
       coords: "",
-      maxPerTurn: 0,
+      maxPerTurn: 1,
       turnRange: {
         open: 0,
         close: 0,
       },
+    },
+    location: {
+      country: "",
+      city: "",
+      localty: "",
+      adress: "",
     },
     error: "",
     showPassword: false,
@@ -53,9 +59,39 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
         maxPerTurn: maxPerTurn,
         turnRange: JSON.parse(turnRange),
       };
-      setState({ ...state, form: editForm });
+      setState({ ...state, form: editForm, location: setLocation() });
     }
   }, []);
+
+  const createTextField = (name, label, location = false) => {
+    let value = state.form[name];
+    let change = handleChange;
+    if (location) {
+      value = state.location[name];
+      change = (e) => handleChange(e, undefined, true);
+    }
+    return (
+      <TextField
+        sx={state.style}
+        error={state.error === name}
+        label={label}
+        name={name}
+        value={value || ""}
+        variant="outlined"
+        onChange={change}
+        helperText={state.error === name ? "Respuesta Inválida" : ""}
+      ></TextField>
+    );
+  };
+
+  const createButtons = (names, labels, location = false) => {
+    return (
+      <Box>
+        {createTextField(names[0], labels[0], location)}
+        {createTextField(names[1], labels[1], location)}
+      </Box>
+    );
+  };
 
   const handleEmptyValue = (form) => {
     setState({ ...state, error: "" });
@@ -67,7 +103,7 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
         return false;
       }
     }
-    if (form.turnRange.open >= form.turnRange.close) {
+    if (form.turnRange && form.turnRange.open >= form.turnRange.close) {
       setState({ ...state, error: "turnRange" });
       return false;
     }
@@ -85,13 +121,22 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
     });
   };
 
-  const handleChange = (e, turnRange) => {
+  const handleChange = (e, turnRange, location = false) => {
     if (turnRange === undefined) {
-      setState({
-        ...state,
-        form: { ...state.form, [e.target.name]: e.target.value },
-        error: "",
-      });
+      !location
+        ? setState({
+            ...state,
+            form: { ...state.form, [e.target.name]: e.target.value },
+            error: "",
+          })
+        : setState({
+            ...state,
+            location: {
+              ...state.location,
+              [e.target.name]: e.target.value,
+            },
+            error: "",
+          });
     } else {
       let hour = e.target.value[0] + e.target.value[1];
       if (hour[0] === "0") hour = hour[1];
@@ -109,26 +154,77 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
     }
   };
 
+  const unifyStrings = (...strings) => {
+    let response = "";
+    for (let i = 0; i < strings.length; i++) {
+      for (let j = 0; j < strings[i].length; j++) {
+        if (strings[i][j] === " ") {
+          response += "+";
+          continue;
+        }
+        response += strings[i][j];
+      }
+      response += ",";
+    }
+    return response;
+  };
+
+  const setCoords = () => {
+    const { adress, city, country, localty } = state.location;
+    setState({
+      ...state,
+      form: {
+        ...state.form,
+        coords: unifyStrings(adress, city, country, localty),
+      },
+    });
+    return unifyStrings(adress, city, country, localty);
+  };
+
+  const setLocation = () => {
+    const string = selectedBranch[0].coords;
+    const keys = ["adress", "localty", "city", "country"];
+    let check = 0;
+    const location = {
+      country: "",
+      city: "",
+      localty: "",
+      adress: "",
+    };
+    for (let i = 0; i < string.length; i++) {
+      if (string[i] === ",") {
+        check++;
+        continue;
+      }
+      if (string[i] === "+") {
+        location[keys[check]] += " ";
+        continue;
+      }
+      location[keys[check]] += string[i];
+    }
+    return location;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(type);
     if (type === "add") {
-      handleEmptyValue(state.form);
-      if (handleEmptyValue(state.form)) {
-        await axios.post("http://localhost:3001/branch/register", state.form);
-        const branchs = await axios.get(
-          "http://localhost:3001/branch/adminview"
-        );
+      const form = state.form;
+      form.coords = setCoords();
+      handleEmptyValue(form);
+      handleEmptyValue(state.location);
+      console.log(handleEmptyValue(state.form));
+      if (handleEmptyValue(state.form) && handleEmptyValue(state.location)) {
+        await axios.post("/branch/register", form);
+        const branchs = await axios.get("/branch/adminview");
         setBranchs(branchs.data);
         setVisibility(false);
       }
     }
     if (type === "edit") {
-      await axios.put(
-        `http://localhost:3001/branch/${selectedBranch[0].id}`,
-        state.form
-      );
-      const branchs = await axios.get("http://localhost:3001/branch/adminview");
+      const form = state.form;
+      form.coords = setCoords();
+      await axios.put(`/branch/${selectedBranch[0].id}`, form);
+      const branchs = await axios.get("/branch/adminview");
       setBranchs(branchs.data);
       setVisibility(false);
     }
@@ -140,6 +236,7 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
       height={780}
       alignItems="center"
       justifyContent="center"
+      sx={{ marginTop: "5vh" }}
     >
       <Box>
         {type === "add" ? (
@@ -150,18 +247,52 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
         <Box
           sx={{ display: "flex", flexWrap: "wrap", flexDirection: "column" }}
         >
-          <Box>
-            <TextField
-              sx={state.style}
-              error={state.error === "name"}
-              label="Nombre"
-              name="name"
-              value={state.form.name || ""}
-              variant="outlined"
-              onChange={handleChange}
-              helperText={state.error === "name" ? "Respuesta Inválida" : ""}
-            ></TextField>
-          </Box>
+          {createTextField("name", "Nombre")}
+          {type === "add" ? (
+            <Box>
+              {createTextField("email", "Mail")}
+              <FormControl sx={state.style} variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Contraseña
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  type={state.showPassword ? "text" : "password"}
+                  error={state.error === "password"}
+                  name="password"
+                  onChange={handleChange}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {state.showPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Contraseña"
+                />
+                {state.error === "password" ? (
+                  <FormHelperText error>Respuesta Inválida</FormHelperText>
+                ) : (
+                  <></>
+                )}
+                {state.error === "passwordLength" ? (
+                  <FormHelperText error>Mínimo 8 Carácteres</FormHelperText>
+                ) : (
+                  <></>
+                )}
+              </FormControl>
+            </Box>
+          ) : (
+            <></>
+          )}
           <Box>
             <FormControl sx={state.style}>
               <InputLabel id="demo-simple-select-label">
@@ -172,7 +303,6 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 name="open"
-                defaultValue={hours[0]}
                 value={hours[state.form.turnRange.open]}
                 label="Hora Inicial"
                 onChange={(e) => handleChange(e, "turnRange")}
@@ -198,7 +328,6 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
                 error={state.error === "turnRange"}
                 id="demo-simple-select"
                 name="close"
-                defaultValue={hours[0]}
                 value={hours[state.form.turnRange.close]}
                 label="Hora Final"
                 onChange={(e) => handleChange(e, "turnRange")}
@@ -218,57 +347,15 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
               )}
             </FormControl>
           </Box>
-          <Box>
+          {createButtons(["country", "city"], ["País", "Ciudad"], true)}
+          {createButtons(
+            ["localty", "adress"],
+            ["Localidad", "Dirección"],
+            true
+          )}
+          <Box sx={{ display: "flex" }}>
             <TextField
-              sx={state.style}
-              error={state.error === "email"}
-              label="Mail"
-              value={state.form.email}
-              variant="outlined"
-              helperText={state.error === "email" ? "Respuesta Inválida" : ""}
-              name="email"
-              onChange={handleChange}
-            ></TextField>
-
-            <FormControl sx={state.style} variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">
-                Contraseña
-              </InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-password"
-                type={state.showPassword ? "text" : "password"}
-                error={state.error === "password"}
-                name="password"
-                onChange={handleChange}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
-                      {state.showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Contraseña"
-              />
-              {state.error === "password" ? (
-                <FormHelperText error>Respuesta Inválida</FormHelperText>
-              ) : (
-                <></>
-              )}
-              {state.error === "passwordLength" ? (
-                <FormHelperText error>Mínimo 8 Carácteres</FormHelperText>
-              ) : (
-                <></>
-              )}
-            </FormControl>
-          </Box>
-          <Box>
-            <TextField
-              defaultValue={1}
-              sx={state.style}
+              sx={{ m: 1, width: "25ch" }}
               label="Cantidad de turnos"
               type="number"
               name="maxPerTurn"
@@ -277,17 +364,9 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
               InputProps={{ inputProps: { min: 1 } }}
               onChange={handleChange}
             ></TextField>
-            <TextField
-              sx={state.style}
-              error={state.error === "coords"}
-              label="Coordenadas"
-              name="coords"
-              variant="outlined"
-              defaultValue={"-90.000, -180.0000"}
-              value={state.form.coords}
-              helperText={state.error === "coords" ? "Respuesta Inválida" : ""}
-              onChange={handleChange}
-            ></TextField>
+            <Button sx={state.style} onClick={setCoords}>
+              Probar Dirección
+            </Button>
           </Box>
           <Button
             type="submit"
@@ -299,6 +378,17 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
           </Button>
         </Box>
       </Box>
+      <iframe
+        width="700vw"
+        height="420vh"
+        frameBorder="0"
+        style={{ border: 0, marginLeft: "10vw", marginTop: "1vh" }}
+        referrerPolicy="no-referrer-when-downgrade"
+        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBfDTDBgoklx7Q1VwUL9_WxJzc69I6BNhI&q=${
+          state.form.coords || "Nolocation"
+        }`}
+        allowFullScreen
+      ></iframe>
     </Box>
   );
 };

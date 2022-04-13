@@ -17,7 +17,7 @@ function BranchList() {
 
   const deleteBranch = (id) => {
     const newBranchs = branchs.filter((row) => row.id !== id);
-    axios.delete(`http://localhost:3001/branch/${id}`);
+    axios.delete(`/branch/${id}`);
     setBranchs(newBranchs);
   };
 
@@ -30,7 +30,7 @@ function BranchList() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/branch/adminview")
+      .get("/branch/adminview")
       .then((res) => setBranchs(res.data));
   }, []);
 
@@ -46,7 +46,23 @@ function BranchList() {
       valueGetter: (params) => params.row.user.email,
       width: 200,
     },
-    { field: "coords", headerName: "Coordenadas", width: 200 },
+    {
+      field: "coords",
+      headerName: "Coordenadas",
+      valueGetter: (params) => {
+        let string = "";
+        for (let i = 0; i < params.row.coords.length; i++) {
+          if (params.row.coords[i] === ",") break;
+          if (params.row.coords[i] === "+") {
+            string += " ";
+            continue;
+          }
+          string += params.row.coords[i];
+        }
+        return string;
+      },
+      width: 200,
+    },
     { field: "maxPerTurn", headerName: "Turnos", width: 120 },
     {
       field: "turnRange",
@@ -92,52 +108,28 @@ function BranchList() {
 
   return visibility ? (
     <>
-      {type === "add" ? (
+      <div style={{ position: "relative", right: "238px" }}>
         <>
-          <div style={{ position: "relative", right: "238px" }}>
-            <Fab
-              sx={{
-                position: "absolute",
-                left: "50vw",
-                top: 105,
-              }}
-              aria-label="Add"
-              color="primary"
-              onClick={toggleVissibility}
-            >
-              <ArrowBackIcon />
-            </Fab>
-          </div>
-          <AdminView
-            type={type}
-            setBranchs={setBranchs}
-            setVisibility={setVisibility}
-          ></AdminView>
+          <Fab
+            sx={{
+              position: "absolute",
+              left: "27vw",
+              top: 60,
+            }}
+            aria-label="Add"
+            color="primary"
+            onClick={toggleVissibility}
+          >
+            <ArrowBackIcon />
+          </Fab>
         </>
-      ) : (
-        <>
-          <div style={{ position: "relative", right: "238px" }}>
-            <Fab
-              sx={{
-                position: "absolute",
-                left: "50vw",
-                top: 105,
-              }}
-              aria-label="Add"
-              color="primary"
-              onClick={toggleVissibility}
-            >
-              <ArrowBackIcon />
-            </Fab>
-          </div>
-          <AdminView
-            type={type}
-            selectedBranch={selectedBranch}
-            setBranchs={setBranchs}
-            setVisibility={setVisibility}
-          ></AdminView>
-        </>
-      )}
+      </div>
+      <AdminView
+        type={type}
+        selectedBranch={selectedBranch}
+        setBranchs={setBranchs}
+        setVisibility={setVisibility}
+      ></AdminView>
     </>
   ) : (
     <Box
@@ -146,7 +138,7 @@ function BranchList() {
       justifyContent="center"
       flexDirection="column"
     >
-      <h1 style={{ marginBottom: "42px", marginTop: "42px" }}>Sucursales</h1>
+      <h1 style={{ marginBottom: "6vh", marginTop: "6vh" }}>Sucursales</h1>
       <Box sx={{ position: "relative" }} height={580} marginBottom={8}>
         <DataGrid
           sx={{ width: "50vw" }}
@@ -157,8 +149,10 @@ function BranchList() {
           <Fab
             sx={{
               position: "absolute",
-              left: "50vw",
-              bottom: 90,
+              left: "49.5vw",
+              bottom: 625,
+              width: 60,
+              height: 60,
             }}
             aria-label="Add"
             color="primary"

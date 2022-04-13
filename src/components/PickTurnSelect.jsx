@@ -15,13 +15,23 @@ import { useParams } from "react-router";
 import genTurns from "../utils/genTurns";
 import Countdown from "react-countdown";
 import Swal from "sweetalert2";
-
+//Socket
+// import { io } from "socket.io-client";
 import axios from "axios";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
 
 import { useNavigate, Navigate } from "react-router-dom";
+
+//Socket
+// const connectionOptions = {
+//   "force new connection": true,
+//   reconnectionAttempts: 1,
+//   timeout: 10000,
+//   transports: ["websocket"],
+//   secure: true,
+// };
 
 export default function PickTurnSelect({ id }) {
   const today = new Date();
@@ -32,8 +42,15 @@ export default function PickTurnSelect({ id }) {
   const [status, setStatus] = useState({});
   const [availability, setAvailability] = useState("");
   const [branch, setBranch] = useState({});
-
+  const [listener, setListener] = useState(false);
   const navigate = useNavigate();
+
+  //Socket
+  // const socket = io("http://localhost:3001", connectionOptions);
+
+  // socket.on("submit", (time, message) => {
+  //   if (date.toISOString().slice(0, 10) === time) console.log(message);
+  // });
 
   const submitData = () => {
     axios
@@ -62,6 +79,12 @@ export default function PickTurnSelect({ id }) {
         });
         navigate("/");
       });
+    //Socket
+    // socket.emit(
+    //   "submit",
+    //   date.toISOString().slice(0, 10),
+    //   "Un turno ha sido tomado"
+    // );
   };
 
   useEffect(() => {
@@ -91,6 +114,13 @@ export default function PickTurnSelect({ id }) {
   if (!branch.turnRange) {
     return null;
   }
+
+  const handleChange = (e) => {
+    setDate(e);
+    setTime("");
+    setAvailability("");
+    setListener(true);
+  };
 
   return (
     <>
