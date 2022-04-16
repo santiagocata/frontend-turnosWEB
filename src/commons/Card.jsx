@@ -39,7 +39,7 @@ const Map = lazy(() => import("./Map"));
             flexWrap: "wrap",
           }}
         >
-          <LocationOnIcon />
+          <LocationOnIcon sx={{ color: "red" }}/>
           <span>
             {branch.coords.split(",")[1].replace("+", " ").toUpperCase()}
           </span>

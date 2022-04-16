@@ -90,7 +90,7 @@ export default function SingleTurn() {
           </Box>
           </>
         ) : (
-          <div style={{ display: "block", marginTop: 60 }}>
+          <div style={{ display: "block", marginTop: 60, textAlign:"center" }}>
             <Typography variant="h5" component="div">
               No posee ningún turno pendiente
             </Typography>
