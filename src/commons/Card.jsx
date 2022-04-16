@@ -41,7 +41,7 @@ const Map = lazy(() => import("./Map"));
         >
           <LocationOnIcon sx={{ color: "red" }}/>
           <span>
-            {branch.coords.split(",")[1].replace("+", " ").toUpperCase()}
+            {branch.coords.replaceAll('+',' ').replace(',',' ').split(',',1)}
           </span>
         </Typography>
       </CardContent>
