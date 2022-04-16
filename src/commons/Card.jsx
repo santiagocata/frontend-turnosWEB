@@ -18,7 +18,7 @@ const Map = lazy(() => import("./Map"));
 
  return (
     <div className="card">
-      <CardMedia height="140" alt="sucursal">
+      <CardMedia alt="sucursal">
       <Suspense fallback={ <Box sx={{ display: 'flex' }} justifyContent="center" margin="1rem 1rem">
                                     <CircularProgress />
                                 </Box>}>
@@ -45,7 +45,7 @@ const Map = lazy(() => import("./Map"));
           </span>
         </Typography>
       </CardContent>
-      <CardActions>
+      <CardActions sx={{justifyContent: "center"}}>
         <Link to={`/book/${branch.id}`} style={{ textDecoration: "none" }}>
           <Button variant="contained" size="small">
             RESERVAR TURNO
