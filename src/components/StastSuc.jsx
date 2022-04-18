@@ -1,7 +1,6 @@
 import React, { useEffect, useContext, useState } from "react";
 import axios from "axios";
 import { LogContext } from "../context/UserContext";
-import Paper from "@material-ui/core/Paper";
 import {
   ArgumentAxis,
   ValueAxis,

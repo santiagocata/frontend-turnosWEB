@@ -12,14 +12,14 @@ import SetNewPassword from "./components/SetNewPassword";
 import ChangePassword from "./components/ChangePassword";
 import SingleTurn from "./components/SingleTurn";
 import ChangeTurn from "./components/ChangeTurn";
-import Footer from "./components/Footer";
 import StastSuc from "./components/StastSuc";
 import { Navigate, Route, Routes } from "react-router";
 import axios from "axios";
 import { LogContext } from "./context/UserContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState} from "react";
 
 function App() {
+
   if (process.env.NODE_ENV === "production") {
     axios.defaults.baseURL = "https://turnos-web-backend.herokuapp.com/";
     axios.defaults.withCredentials = true;
@@ -56,7 +56,7 @@ function App() {
 
         {user?.role === "client" && (
           <>
-            <Route path="/" element={<ResponsiveGrid />} />
+            <Route path="/" element={<ResponsiveGrid />}/>
             <Route path="/book/:id" element={<PickTurn />} />
             <Route path="/myturn" element={<SingleTurn />} />
             <Route path="/changeturn/:id" element={<ChangeTurn />} />

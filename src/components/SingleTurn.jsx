@@ -4,8 +4,8 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
 import axios from "axios";
+import Map from "../commons/Map"
 import { LogContext } from "../context/UserContext";
 import { useContext, useEffect, useState, useRef} from "react";
 import { useNavigate } from "react-router-dom";
@@ -127,8 +127,9 @@ export default function SingleTurn() {
               <Typography variant="h5" component="div">
                 {turn.branch.name}
               </Typography>
-              <Typography variant="body2">Fecha {turn.date}</Typography>
-              <Typography variant="body2">Hora {turn.time}</Typography>
+              <Typography variant="body2">Fecha: <strong>{turn.date.substring(8,10)+"/"+turn.date.substring(5,7)+"/"+turn.date.substring(0,4)}</strong></Typography>
+              <Typography variant="body2">Hora: <strong>{turn.time}hs</strong></Typography>
+              <Typography variant="body2">Dirección: <strong>{turn.branch.coords.replaceAll('+',' ').replace(',','; ').split(',',1)}</strong></Typography>
             </CardContent>
             <CardActions>
               <Button
@@ -160,14 +161,14 @@ export default function SingleTurn() {
           }
           </>
         ) : (
-          <>
+          <div style={{ display: "block", marginTop: 60, textAlign:"center" }}>
             <Typography variant="h5" component="div">
               No posee ningún turno pendiente
             </Typography>
             <Button onClick={() => navigate("/")}>VOLVER A INICIO</Button>
-          </>
+          </div>
         )}
-      </Stack>
+   
     </div>
   );
 }

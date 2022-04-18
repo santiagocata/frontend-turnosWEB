@@ -1,4 +1,16 @@
 const Map = ({coords})=>{
+    /*
+    function showLocationOnMap(position){
+        let latitud = position.coords.latitude;
+        let longitud = position.coords.longitude;
+        console.log(latitud,longitud)        
+    }
+    
+    
+        let geoLoc = navigator.geolocation
+        let watchId = geoLoc.watchPosition(showLocationOnMap)
+    */
+
     return(
             
                     <iframe
@@ -15,5 +27,3 @@ const Map = ({coords})=>{
 }
 
 export default Map;
-
-
