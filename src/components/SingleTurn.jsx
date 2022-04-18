@@ -5,7 +5,8 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import Map from "../commons/Map"
+import Map from "../commons/Map";
+import Stack from "@mui/material/Stack";
 import { LogContext } from "../context/UserContext";
 import { useContext, useEffect, useState, useRef} from "react";
 import { useNavigate } from "react-router-dom";
