@@ -1,0 +1,11 @@
+.singleTurn{
+    display: flex;
+    justify-content: center;
+    margin: 2rem 1rem;
+}
+
+@media screen and (max-width:610px) {
+    .singleTurn{
+        display: block;
+    }
+}
