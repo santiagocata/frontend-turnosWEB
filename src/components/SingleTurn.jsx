@@ -19,39 +19,43 @@ export default function SingleTurn() {
     googleMapsApiKey: "AIzaSyBOBzdUldoF1Kel0dPx_kJ33Vs4R-ciOPY"
   })
 
-  
-  
-  function showLocationOnMap(position){
-    /*eslint-disable-next-line no-undef*/
-    let latitud = position.coords.latitude;
-    /*eslint-disable-next-line no-undef*/
-    let longitud =  position.coords.longitude;
-    
-    return {lat: latitud,lgn: longitud};
-  }
-
-
-    let geoLoc = navigator.geolocation
-    let watchId = geoLoc.watchPosition(showLocationOnMap);
-
   const [turn, setTurn] = useState({});
   const [location, setLocation] = useState({lat: -34.60357139009188, lng: -58.38157920260902});
   const [directionResponse, setDirectionResponse] = useState('');
   const [distance, setDistance] = useState('');
   const [duration, setDuration] = useState('');
+  const [showMap,setShowMap] = useState(false);
   const navigate = useNavigate();
 
-  const destinationRef = useRef();
-  //const objLat = { lat: -34.4891572, lng: -58.9008284};
-
+   //const objLat = { lat: -34.4891572, lng: -58.9008284};
 
   const { user } = useContext(LogContext);
 
   useEffect(() => {
     axios.get(`turn/pending/${user.id}`).then((turn) => {
       setTurn(turn.data);
-      console.log(turn.data.branch.coords);
-      destinationRef(turn.data.branch.coords);
+      let geoLoc = navigator.geolocation;
+      let watchId = geoLoc.watchPosition((position)=>{
+        let latitud = position.coords.latitude;
+        let longitud = position.coords.longitude;
+        setLocation({lat: latitud, lng: longitud});  
+    });
+
+    
+    /*eslint-disable-next-line no-undef*/    
+    const directionsService = new google.maps.DirectionsService();
+    directionsService.route({
+        origin: location,
+        destination: turn.branch.coords,
+        /*eslint-disable-next-line no-undef*/
+        travelMode: google.maps.TravelMode.DRIVING,
+    })
+    .then((results)=>{
+      setDirectionResponse(results);
+      setDistance(results.routes[0].legs[0].distance.text);
+      setDuration(results.routes[0].legs[0].distance.text);
+    })
+
     });
   }, []);
 
@@ -80,21 +84,24 @@ export default function SingleTurn() {
   };
   
   function calcuteRoute(){
+    setShowMap(true);
     if(location=== undefined || turn.branch.coords=== undefined){
       return 
     }
-    /*eslint-disable-next-line no-undef*/
+    /*eslint-disable-next-line no-undef*/    
     const directionsService = new google.maps.DirectionsService();
-    const results = directionsService.route({
+    directionsService.route({
         origin: location,
-        destination: destinationRef.current.value,
+        destination: turn.branch.coords,
         /*eslint-disable-next-line no-undef*/
         travelMode: google.maps.TravelMode.DRIVING,
     })
-
-    setDirectionResponse(results);
-    setDistance(results.routes[0].legs[0].distance.text);
-    setDuration(results.routes[0].legs[0].distance.text);
+    .then((results)=>{
+      setDirectionResponse(results);
+      setDistance(results.routes[0].legs[0].distance.text);
+      setDuration(results.routes[0].legs[0].distance.text);
+    })
+    
   }
 
 
@@ -108,7 +115,7 @@ export default function SingleTurn() {
     <div style={{ display: "flex", justifyContent: "center", position: "relative", marginTop: 30 }}>
       <Stack spacing={5}>
         {turn.date ? (<>
-          <Card sx={{ minWidth: 275, maxWidth: 275 }}>
+          <Card sx={{ minWidth: 275, maxWidth: "100%", justifyContent:"center"}}>
             <CardContent>
               <Typography
                 sx={{ fontSize: 14 }}
@@ -143,12 +150,14 @@ export default function SingleTurn() {
           <Button variant="contained" size="small" onClick={calcuteRoute}>
             CALCULAR RUTA
           </Button>
-          <Box position={"relative"} left={0} sx={{ width: 500, height: 500 }}>
-            <GoogleMap center={location} mapContainerStyle={{width:"100%", height:"100%"}} zoom={13}>
-              <Marker position={location}/>
-              {directionResponse && <DirectionsRenderer directions={directionResponse}/>}
-            </GoogleMap>
-          </Box>
+          {showMap ? 
+            <Box position={"relative"} left={0} sx={{ width: 360, height: 500 }}>
+              <GoogleMap center={location} mapContainerStyle={{width:"100%", height:"100%"}} zoom={13}>
+                <Marker position={location}/>
+                {directionResponse && <DirectionsRenderer directions={directionResponse}/>}
+              </GoogleMap>
+            </Box> : <></>
+          }
           </>
         ) : (
           <>
