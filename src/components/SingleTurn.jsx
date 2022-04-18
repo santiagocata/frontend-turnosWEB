@@ -7,19 +7,51 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import axios from "axios";
 import { LogContext } from "../context/UserContext";
-import { useContext, useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useContext, useEffect, useState, useRef} from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import CircularProgress from '@mui/material/CircularProgress';
+import { useJsApiLoader, GoogleMap, Marker, DirectionsRenderer } from "@react-google-maps/api";
 
 export default function SingleTurn() {
+
+  const {isLoaded} = useJsApiLoader({
+    googleMapsApiKey: "AIzaSyBOBzdUldoF1Kel0dPx_kJ33Vs4R-ciOPY"
+  })
+
+  
+  
+  function showLocationOnMap(position){
+    /*eslint-disable-next-line no-undef*/
+    let latitud = position.coords.latitude;
+    /*eslint-disable-next-line no-undef*/
+    let longitud =  position.coords.longitude;
+    
+    return {lat: latitud,lgn: longitud};
+  }
+
+
+    let geoLoc = navigator.geolocation
+    let watchId = geoLoc.watchPosition(showLocationOnMap);
+
   const [turn, setTurn] = useState({});
+  const [location, setLocation] = useState({lat: -34.60357139009188, lng: -58.38157920260902});
+  const [directionResponse, setDirectionResponse] = useState('');
+  const [distance, setDistance] = useState('');
+  const [duration, setDuration] = useState('');
   const navigate = useNavigate();
+
+  const destinationRef = useRef();
+  //const objLat = { lat: -34.4891572, lng: -58.9008284};
+
 
   const { user } = useContext(LogContext);
 
   useEffect(() => {
     axios.get(`turn/pending/${user.id}`).then((turn) => {
       setTurn(turn.data);
+      console.log(turn.data.branch.coords);
+      destinationRef(turn.data.branch.coords);
     });
   }, []);
 
@@ -46,11 +78,36 @@ export default function SingleTurn() {
         })
       );
   };
+  
+  function calcuteRoute(){
+    if(location=== undefined || turn.branch.coords=== undefined){
+      return 
+    }
+    /*eslint-disable-next-line no-undef*/
+    const directionsService = new google.maps.DirectionsService();
+    const results = directionsService.route({
+        origin: location,
+        destination: destinationRef.current.value,
+        /*eslint-disable-next-line no-undef*/
+        travelMode: google.maps.TravelMode.DRIVING,
+    })
+
+    setDirectionResponse(results);
+    setDistance(results.routes[0].legs[0].distance.text);
+    setDuration(results.routes[0].legs[0].distance.text);
+  }
+
+
+  if(!isLoaded){
+    return <Box sx={{ display: 'flex' }} justifyContent="center" margin="1rem 1rem">
+              <CircularProgress />
+          </Box>
+  }
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", marginTop: 60 }}>
+    <div style={{ display: "flex", justifyContent: "center", position: "relative", marginTop: 30 }}>
       <Stack spacing={5}>
-        {turn.date ? (
+        {turn.date ? (<>
           <Card sx={{ minWidth: 275, maxWidth: 275 }}>
             <CardContent>
               <Typography
@@ -83,6 +140,16 @@ export default function SingleTurn() {
               </Button>
             </CardActions>
           </Card>
+          <Button variant="contained" size="small" onClick={calcuteRoute}>
+            CALCULAR RUTA
+          </Button>
+          <Box position={"relative"} left={0} sx={{ width: 500, height: 500 }}>
+            <GoogleMap center={location} mapContainerStyle={{width:"100%", height:"100%"}} zoom={13}>
+              <Marker position={location}/>
+              {directionResponse && <DirectionsRenderer directions={directionResponse}/>}
+            </GoogleMap>
+          </Box>
+          </>
         ) : (
           <>
             <Typography variant="h5" component="div">
