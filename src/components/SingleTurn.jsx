@@ -168,7 +168,7 @@ export default function SingleTurn() {
             <Button onClick={() => navigate("/")}>VOLVER A INICIO</Button>
           </div>
         )}
-   
+    </Stack>
     </div>
   );
 }
