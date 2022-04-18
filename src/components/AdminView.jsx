@@ -37,7 +37,7 @@ const AdminView = ({ type, setBranchs, setVisibility, selectedBranch }) => {
     },
     error: "",
     showPassword: false,
-    style: { m: 1, width: "25ch" },
+    style: { m: 1, width: "18vw" },
   });
   const [hours, setHours] = useState(["00:00"]);
 
